@@ -73,6 +73,7 @@ class TaskInvocation{
 public:
 	TaskInvocation(Task, Driver, unsigned int);
 	void SetFrequency (unsigned int);
+	SchedulerTask GetSchedulerTask();
 private:
 	unsigned int frequency;
 	Task myTask;
@@ -112,7 +113,7 @@ private:
 
 class GiottoDirector{
 public:
-	GiottoDirector(& Scheduler);
+	GiottoDirector();
 	Mode start;
 	void Run(vector<Task>);
 	vector<Port> GetPortList() {return portList};
@@ -120,7 +121,8 @@ public:
 	vector<Driver> GetDriverList() {return driverList};
 	vector<Mode> GetModeList() {return modeList};
 private:
-	Scheduler myScheduler;
+	vector<Task> GenerateSchedule(vector<Task>);
+	void RunScheduled();
 	vector<Port> portList;
 	vector<Task> taskList;
 	vector<Driver> driverList;

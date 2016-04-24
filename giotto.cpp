@@ -55,6 +55,10 @@ void TaskInvocation::SetFrequency (unsigned int f) {
 	frequency = f;
 }
 
+SchedulerTask TaskInvocation::GetSchedulerTask() {
+	// return in scheduler task format (id and period)
+}
+
 ActuatorUpdate::ActuatorUpdate(Driver d, unsigned int f) {
 	myDriver = d;
 	frequency = f;
@@ -82,11 +86,17 @@ Config::Config () {
 	// ...
 }
 
-GiottoDirector::GiottoDirector(&Scheduler scheduler) { // check syntax
-	myScheduler = scheduler;
+GiottoDirector::GiottoDirector() {
 	// ...
 }
 
 void GiottoDirector::Run(vector<Task> activeTasks) {
 	// ...
+	vector<Task> scheduledTasks = GenerateSchedule(activeTasks);
+	taskList = scheduledTasks;
+	RunScheduled();
+}
+
+void GiottoDirector::RunScheduled() {
+	// ... actual run loop, assumes taskList already in scheduled order
 }
