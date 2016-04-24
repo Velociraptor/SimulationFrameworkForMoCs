@@ -3,12 +3,14 @@
 
 #include <vector>
 #include <string>
+#include "scheduler.h"
 using namespace std;
 
 class Port{
 public:
-	string portName(){return name};
-	void setType(string);
+	Port(string, string);
+	string Name(){return name};
+	void SetType(string);
 private:
 	string name;
 
@@ -18,7 +20,7 @@ private:
 		float myValue;
 		double myValue;
 	};
-	union initalValue{
+	union initialValue{
 		bool myValue;
 		int myValue;
 		float myValue;
@@ -29,29 +31,34 @@ private:
 };
 
 class Task{
+public:
+	Task(string);
+	vector<Port> TaskFunction(vector<Port>);
+	string Name(){return name};
 private:
 	string name;
 	std::vector<Port> in;
 	std::vector<Port> out;
 	std::vector<Port> priv;
-public:
-	vector<Port> TaskFunction(vector<Port>);
-	string portName(){return name};
 };
 
 class Driver{
+public:
+	Driver(string);
+	bool DriverFunction(vector<Port.value>);
+	bool Guard(vector<Port.value>);
+	string Name(){return name};
 private:
 	string name;
 	std::vector<Port> src;
 	std::vector<Port> dst;
-public:
-	bool DriverFunction(vector<Port.value>);
-	bool guard(vector<Port.value>);
-	string portName(){return name};
-
 };
 
 class Mode{
+public:
+	Mode(string);
+	void SetStartMode(Mode);
+	string Name(){return name};
 private:
 	string name;
 	float period;
@@ -59,41 +66,44 @@ private:
 	vector<TaskInvocation> invokes;
 	vector<ActuatorUpdate> updates;
 	vector<ModeSwitch> switches;
-	Mode startMode;																													
-public:
-	void setStartMode(Mode);
-
+	Mode startMode;
 };
 
 class TaskInvocation{
+public:
+	TaskInvocation(Task, Driver, unsigned int);
+	void SetFrequency (unsigned int);
+	SchedulerTask GetSchedulerTask();
 private:
 	unsigned int frequency;
 	Task myTask;
 	Driver myDriver;
-public:
-	void SetFrequency (unsigned int);
 };
 
 class ActuatorUpdate{
+public:
+	ActuatorUpdate(Driver, unsigned int);
+	void SetFrequency (unsigned int);
 private:
 	unsigned int frequency;
 	Driver myDriver;
-public:
-	void SetFrequency (unsigned int);
 };
 
 class ModeSwitch{
+public:
+	ModeSwitch(Driver, Mode, unsigned int);
+	void SetFrequency (unsigned int);
+	void SetTargetMode (Mode);
 private:
 	unsigned int frequency;
 	Mode targetMode;
 	Driver myDriver;
-public:
-	void SetFrequency (unsigned int);
-	void SetTargetMode (Mode);
 };
 
 
 class Config{
+public:
+	Config();
 private:
 	Mode m;
 	float ModeTime;
@@ -102,16 +112,21 @@ private:
 };
 
 class GiottoDirector{
-private:
-	std::vector<Port> portList;
-	std::vector<Task> taskList;
-	std::vector<Driver> driverList;
-	std::vector<Mode> modeList;
 public:
+	GiottoDirector();
 	Mode start;
-	void run(taskList activeTasks);
-	vector<Port> getPortList() {return portList};
-	vector<Task> getTaskList() {return taskList};
-	vector<Driver> getDriverList() {return driverList};
-	vector<Mode> getModeList() {return modeList};
+	void Run(vector<Task>);
+	vector<Port> GetPortList() {return portList};
+	vector<Task> GetTaskList() {return taskList};
+	vector<Driver> GetDriverList() {return driverList};
+	vector<Mode> GetModeList() {return modeList};
+private:
+	vector<Task> GenerateSchedule(vector<Task>);
+	void RunScheduled();
+	vector<Port> portList;
+	vector<Task> taskList;
+	vector<Driver> driverList;
+	vector<Mode> modeList;
 };
+
+#endif
