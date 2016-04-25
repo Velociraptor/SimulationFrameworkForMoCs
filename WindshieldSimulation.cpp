@@ -16,21 +16,21 @@ int main() {
 
 	// Weather Model simulates rainfall as a random int per [unit time]
 	RandomIntInRange weatherModel = new RandomIntInRange("WeatherModel",20);
-	Task generateRainfall = new Task("MakeItRain", weatherModel.Run());
+	Task generateRainfall = new Task("MakeItRain", weatherModel.Compute());
 	Driver rainDriver = new Driver("RainDriver"); // ??? what else to set?
 	unsigned int rainGenFreq = 2000;
 	TaskInvocation genRainInvoke = new TaskInvocation(generateRainfall, rainDriver, rainGenFreq);
 
 	// Rainfall Sensor accumulates rain over time to dictate rate of fall for controls
 	AccumulatorWithReset rainfallSensor = new AccumulatorWithReset("RainfallSensor");
-	Task senseRainfall = new Task("HaveYouEverFeltTheRain", rainfallSensor.Run());
+	Task senseRainfall = new Task("HaveYouEverFeltTheRain", rainfallSensor.Compute());
 	Driver sensorDriver = new Driver("SensorDriver"); // ???
 	unsigned int rainSenseFreq = 2000;
 	TaskInvocation senseRainInvoke = new TaskInvocation(senseRainfall, sensorDriver, rainSenseFreq);
 	
 	// Rainfall Rate tracks rainfall over [unit time] to send to mode control
 	Difference rainfallRateCheck = new Difference("RainfallRateCheck");
-	Task checkRainfallRate = new Task("RainingCatsOrDogs", rainfallRateCheck.Run());
+	Task checkRainfallRate = new Task("RainingCatsOrDogs", rainfallRateCheck.Compute());
 	Driver rainRateDriver = new Driver("rainRateDriver"); // ???
 	unsigned int rainRateCheckFreq = 2000;
 	TaskInvocation rainRateInvoke = new TaskInvocation(checkRainfallRate, rainRateDriver, rainRateCheckFreq);

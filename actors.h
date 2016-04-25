@@ -49,6 +49,27 @@ private:
 class AccumulatorWithReset : Actor {
 public:
 	AccumulatorWithReset(string) : Actor(s) {};
+	void Compute();
+	void SetFloatInput(float);
+	void Reset();
+	float GetOutput();
+private:
+	float input;
+	float output;
+};
+
+// difference
+class Difference : Actor {
+public:
+	Difference(string) : Actor(s) {};
+	void Compute();
+	void SetFloatInput1(float);
+	void SetFloatInput2(float);
+	float GetOutput();
+private:
+	float input1;
+	float input2;
+	float output;
 };
 
 #endif
