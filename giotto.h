@@ -6,7 +6,8 @@
 #include <chrono>
 #include <ctime>
 #include "scheduler.h"
-#include "actor.h"
+#include "actors.h"
+
 using namespace std;
 
 class Task{
