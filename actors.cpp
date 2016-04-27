@@ -44,8 +44,8 @@ Port::Port (string name, PortType type, double initialValDbl) {
 }
 
 // Actor constructor
-Actor::Actor (string name, vector<Port> inputPorts, 
-	vector<Port> outputPorts) {
+Actor::Actor (string name, vector<Port*> inputPorts, 
+	vector<Port*> outputPorts) {
 	myName = name;
 	myInputs = inputPorts;
 	myOutputs = outputPorts;
@@ -61,15 +61,15 @@ string ComparatorGreater::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void ComparatorGreater::Compute () {
-	PortType pt = myInputs[0].Type();
+	PortType pt = myInputs[0]->Type();
 	bool output;
 	// PortValue input1pv = myInputs[0].GetValue();
 	// PortValue input2pv = myInputs[1].GetValue();
 	switch (pt) {
 		case INT:
 			{
-				int input1 = myInputs[0].GetValueInt();
-				int input2 = myInputs[1].GetValueInt();
+				int input1 = myInputs[0]->GetValueInt();
+				int input2 = myInputs[1]->GetValueInt();
 				cout << "int 1 " << input1 << " int 2 " << input2 << endl;
 				if (input1 > input2) {
 					output = true;
@@ -78,8 +78,8 @@ void ComparatorGreater::Compute () {
 			}
 		case FLOAT:
 			{
-				float input1 = myInputs[0].GetValueFloat();
-				float input2 = myInputs[1].GetValueFloat();
+				float input1 = myInputs[0]->GetValueFloat();
+				float input2 = myInputs[1]->GetValueFloat();
 				if (input1 > input2) {
 					output = true;
 				}
@@ -87,8 +87,8 @@ void ComparatorGreater::Compute () {
 			}
 		case DOUBLE:
 			{
-				double input1 = myInputs[0].GetValueDouble();
-				double input2 = myInputs[1].GetValueDouble();
+				double input1 = myInputs[0]->GetValueDouble();
+				double input2 = myInputs[1]->GetValueDouble();
 				if (input1 > input2) {
 					output = true;
 				}
@@ -99,27 +99,27 @@ void ComparatorGreater::Compute () {
 			break;
 	}
 	
-	myOutputs[0].SetValueBool(output);
+	myOutputs[0]->SetValueBool(output);
 }
 
 int main() {
-	Port a = Port(string("a"), INT, 1);
-	Port b = Port(string("b"), INT, 5);
-	Port o = Port(string("out"), BOOL, false);
-	// Port *a = new Port(string("a"), INT, 1);
-	// Port *b = new Port(string("b"), INT, 5);
-	// Port *o = new Port(string("out"), BOOL, false);
-	vector<Port> vip = vector<Port>();
-	vector<Port> vop = vector<Port>();
+	// Port a = Port(string("a"), INT, 1);
+	// Port b = Port(string("b"), INT, 5);
+	// Port o = Port(string("out"), BOOL, false);
+	Port *a = new Port(string("a"), INT, 1);
+	Port *b = new Port(string("b"), INT, 5);
+	Port *o = new Port(string("out"), BOOL, false);
+	vector<Port*> vip = vector<Port*>();
+	vector<Port*> vop = vector<Port*>();
 	vip.push_back(a);
 	vip.push_back(b);
 	vop.push_back(o);
 	ComparatorGreater compy = ComparatorGreater(string("compy"), vip, vop);
 	compy.Compute();
-	cout << "compy says " << compy.GetOutputs()[0].GetValueBool() << " for 1>5" << endl;
-	a.SetValueInt(10);
+	cout << "compy says " << compy.GetOutputs()[0]->GetValueBool() << " for 1>5" << endl;
+	a->SetValueInt(10);
 	compy.Compute();
-	cout << "compy says " << compy.GetOutputs()[0].GetValueBool() << " for 10>5" << endl;
+	cout << "compy says " << compy.GetOutputs()[0]->GetValueBool() << " for 10>5" << endl;
 
 
 	return 0;

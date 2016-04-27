@@ -43,15 +43,15 @@ private:
 // generic Actor base class
 class Actor {
 public:
-	Actor(string, vector<Port>, vector<Port>);
+	Actor(string, vector<Port*>, vector<Port*>);
 	string Name(){return myName;};
-	vector<Port> GetInputs(){return myInputs;};
-	vector<Port> GetOutputs(){return myOutputs;};
+	vector<Port*> GetInputs(){return myInputs;};
+	vector<Port*> GetOutputs(){return myOutputs;};
 	virtual string ActorType() = 0;
 	virtual void Compute() {};
 protected:
-	vector<Port> myInputs;
-	vector<Port> myOutputs;
+	vector<Port*> myInputs;
+	vector<Port*> myOutputs;
 private:
 	string myName;
 };
@@ -61,8 +61,8 @@ private:
 // expected output ports: 1 - bool
 class ComparatorGreater : public Actor {
 public:
-	ComparatorGreater(string s, vector<Port> inputPorts, 
-		vector<Port> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	ComparatorGreater(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	string ActorType();
 	void Compute();
 };
@@ -72,8 +72,8 @@ public:
 // expected output ports: 1 - int
 class RandomIntInRange : public Actor {
 public:
-	RandomIntInRange(string s, vector<Port> inputPorts, 
-		vector<Port> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	RandomIntInRange(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	string ActorType();
 	void Compute();
 };
@@ -83,8 +83,8 @@ public:
 // expected output ports: 1 - numeric (current accumulation)
 class AccumulatorWithReset : public Actor {
 public:
-	AccumulatorWithReset(string s, vector<Port> inputPorts, 
-		vector<Port> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	AccumulatorWithReset(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	void Compute();
 };
 
@@ -93,8 +93,8 @@ public:
 // expected output ports: 1 - numeric
 class Difference : public Actor {
 public:
-	Difference(string s, vector<Port> inputPorts, 
-		vector<Port> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	Difference(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	void Compute();
 };
 
