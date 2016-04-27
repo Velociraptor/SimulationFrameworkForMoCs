@@ -68,7 +68,7 @@ public:
 };
 
 // generate random int within given range
-// expected input ports: 1 - numeric
+// expected input ports: 1 - numeric (top of range, from zero)
 // expected output ports: 1 - int
 class RandomIntInRange : public Actor {
 public:
@@ -85,6 +85,7 @@ class AccumulatorWithReset : public Actor {
 public:
 	AccumulatorWithReset(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	string ActorType();
 	void Compute();
 };
 
@@ -95,6 +96,7 @@ class Difference : public Actor {
 public:
 	Difference(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	string ActorType();
 	void Compute();
 };
 
