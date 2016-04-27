@@ -4,31 +4,8 @@
 #include <vector>
 #include <string>
 #include "scheduler.h"
+#include "actors.h"
 using namespace std;
-
-class Port{
-public:
-	Port(string, string);
-	string Name(){return name};
-	void SetType(string);
-private:
-	string name;
-
-	union value{
-		bool myValue;
-		int myValue;
-		float myValue;
-		double myValue;
-	};
-	union initialValue{
-		bool myValue;
-		int myValue;
-		float myValue;
-		double myValue;
-	};
-
-	enum type {SensPort, ActPort, InPort, OutPort, PrivPort };
-};
 
 class Task{
 public:

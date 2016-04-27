@@ -6,70 +6,96 @@
 
 using namespace std;
 
+typedef enum PortType{ BOOL, INT, FLOAT, DOUBLE } PortType;
+
+typedef union value{
+	bool myValueBool;
+	int myValueInt;
+	float myValueFloat;
+	double myValueDouble;
+} PortValue;
+
+// shared notion of Ports
+class Port{
+public:
+	Port(string, PortType, PortValue);
+	Port(string, PortType, bool);
+	Port(string, PortType, int);
+	Port(string, PortType, float);
+	Port(string, PortType, double);
+	string Name(){return myName;};
+	PortType Type(){return myType;};
+	PortValue GetValue(){return myValue;};
+	bool GetValueBool(){return myValue.myValueBool;};
+	int GetValueInt(){return myValue.myValueInt;};
+	float GetValueFloat(){return myValue.myValueFloat;};
+	double GetValueDouble(){return myValue.myValueDouble;};
+	void SetValueBool(bool b){myValue.myValueBool = b;};
+	void SetValueInt(int i){myValue.myValueInt = i;};
+	void SetValueFloat(float f){myValue.myValueFloat = f;};
+	void SetValueDouble(double d){myValue.myValueDouble = d;};
+private:
+	string myName;
+	PortType myType;
+	PortValue myValue;
+};
+
 // generic Actor base class
 class Actor {
 public:
-	Actor(string);
-	string Name();
-	virtual string ActorType();
-	virtual void Compute();
+	Actor(string, vector<Port>, vector<Port>);
+	string Name(){return myName;};
+	vector<Port> GetInputs(){return myInputs;};
+	vector<Port> GetOutputs(){return myOutputs;};
+	virtual string ActorType() = 0;
+	virtual void Compute() {};
+protected:
+	vector<Port> myInputs;
+	vector<Port> myOutputs;
 private:
 	string myName;
 };
 
-// strict greater than comparator for integer inputs
-class IntComparatorG : Actor {
+// strict greater than comparator
+// expected input ports: 2 - numeric
+// expected output ports: 1 - bool
+class ComparatorGreater : public Actor {
 public:
-	IntComparatorG(string s) : Actor(s) {};
+	ComparatorGreater(string s, vector<Port> inputPorts, 
+		vector<Port> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	string ActorType();
 	void Compute();
-	void SetIntInput1(int);
-	void SetIntInput2(int);
-	bool GetOutput();
-private:
-	int input1;
-	int input2;
-	bool output;
 };
 
 // generate random int within given range
-class RandomIntInRange : Actor {
+// expected input ports: 1 - numeric
+// expected output ports: 1 - int
+class RandomIntInRange : public Actor {
 public:
-	RandomIntInRange(string, int);
+	RandomIntInRange(string s, vector<Port> inputPorts, 
+		vector<Port> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	string ActorType();
 	void Compute();
-	void SetRange(int);
-	int GetOutput();
-private:
-	int range;
-	int output;
 };
 
 // accumulator with reset
-class AccumulatorWithReset : Actor {
+// expected input ports: 2 - numeric and bool (for reset flag)
+// expected output ports: 1 - numeric (current accumulation)
+class AccumulatorWithReset : public Actor {
 public:
-	AccumulatorWithReset(string) : Actor(s) {};
+	AccumulatorWithReset(string s, vector<Port> inputPorts, 
+		vector<Port> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	void Compute();
-	void SetFloatInput(float);
-	void Reset();
-	float GetOutput();
-private:
-	float input;
-	float output;
 };
 
 // difference
-class Difference : Actor {
+// expected input ports: 2 - numeric
+// expected output ports: 1 - numeric
+class Difference : public Actor {
 public:
-	Difference(string) : Actor(s) {};
+	Difference(string s, vector<Port> inputPorts, 
+		vector<Port> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	void Compute();
-	void SetFloatInput1(float);
-	void SetFloatInput2(float);
-	float GetOutput();
-private:
-	float input1;
-	float input2;
-	float output;
 };
 
 #endif
