@@ -1,40 +1,37 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <giotto.h>
+#include <chrono>
+#include <ctime>
+#include "giotto.h"
+#include "scheduler.h"
+#include "actor.h"
 
 using namespace std;
 
 //	Giotto components definitions
 
-Port::Port(string nameIn, string typeIn) {
+Task::Task(string nameIn,  void (*f)() ) {
 	name = nameIn;
-	SetType(typeIn);
-	initialValue = 0; // which type?
+	TaskFunction = f;
+
 }
 
-void Port::SetType(string typeIn) {
-	type = typeIn;
-}
-
-Task::Task(string nameIn) {
-	name = nameIn;
-}
-
-vector<Port> Task::TaskFunction(vector<Port> pVector) {
-	// ...
+vector<Port*> Task::TaskFunction(vector<Port*> pVector) {
+	src = pVector;
+	return dst;
 }
 
 Driver::Driver(string nameIn) {
 	name = nameIn;
 }
 
-bool Driver::DriverFunction(vector<Port.value> pValVector) {
-	// ...
+bool Driver::DriverFunction(vector<Port*> pValVector) {
+	return TRUE;
 }
 
-bool Driver::Guard(vector<Port.value> pValVector) {
-	// ...
+bool Driver::Guard(vector<Port*> pValVector) {
+	return TRUE;
 }
 
 Mode::Mode(string nameIn) {
@@ -49,6 +46,7 @@ TaskInvocation::TaskInvocation(Task t, Driver d, unsigned int f) {
 	myTask = t;
 	myDriver = d;
 	frequency = f;
+	mySchedTask = GetSchedulerTask();
 }
 
 void TaskInvocation::SetFrequency (unsigned int f) {
@@ -57,6 +55,10 @@ void TaskInvocation::SetFrequency (unsigned int f) {
 
 SchedulerTask TaskInvocation::GetSchedulerTask() {
 	// return in scheduler task format (id and period)
+	int period = (int)1000/frequency;
+	std::chrono::milliseconds m(period);
+	SchedulerTask myShedulerTask = new SchedulerTask( myTask.name, m);
+	return myShedulerTask;
 }
 
 ActuatorUpdate::ActuatorUpdate(Driver d, unsigned int f) {
@@ -82,21 +84,37 @@ void ModeSwitch::SetTargetMode (Mode m) {
 	targetMode = m;
 }
 
-Config::Config () {
-	// ...
+Config::Config (Mode startMode, vector<Port*> p) {
+	myMode.setStartMode(startMode);
+	UsedPorts = p;
+	ActiveTasks = NULL;
+	TimetStamp = new std::chrono::milliseconds(0);
+	ModeTime = new std::chrono::milliseconds(0);
 }
 
-GiottoDirector::GiottoDirector() {
-	// ...
+GiottoDirector::GiottoDirector(Config c) {
+	start = c.myMode;
+	portList = c.UsedPorts;
 }
 
-void GiottoDirector::Run(vector<Task> activeTasks) {
+void GiottoDirector::Run(vector<TaskInvocation*> activeTasks) {
 	// ...
-	vector<Task> scheduledTasks = GenerateSchedule(activeTasks);
-	taskList = scheduledTasks;
+	vector<SchedulerTask> unorderedTasks;
+	for (int i = 0; i < activeTasks.size(); ++i)
+	{
+		unorderedTasks.push_back(activeTasks->mySchedTask);
+	}
+	vector<SchedulerTask> scheduledTasks = getSchedule(unorderedTasks);
+	vector<SchedulerTask*> refScheduledTasks;
+	for (int i = 0; i < scheduledTasks.size(); ++i)
+	{
+		refScheduledTasks.push_back(&scheduledTasks[i]);
+	}
+	taskList = refScheduledTasks;
 	RunScheduled();
 }
 
 void GiottoDirector::RunScheduled() {
 	// ... actual run loop, assumes taskList already in scheduled order
+
 }
