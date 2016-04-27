@@ -3,69 +3,45 @@
 
 #include <vector>
 #include <string>
+#include <chrono>
+#include <ctime>
 #include "scheduler.h"
+#include "actor.h"
 using namespace std;
-
-class Port{
-public:
-	Port(string, string);
-	string Name(){return name};
-	void SetType(string);
-private:
-	string name;
-
-	union value{
-		bool myValue;
-		int myValue;
-		float myValue;
-		double myValue;
-	};
-	union initialValue{
-		bool myValue;
-		int myValue;
-		float myValue;
-		double myValue;
-	};
-
-	enum type {SensPort, ActPort, InPort, OutPort, PrivPort };
-};
 
 class Task{
 public:
-	Task(string);
-	vector<Port> TaskFunction(vector<Port>);
-	string Name(){return name};
+	Task(string, vector<Port*> (*f)(vector<Port*>));
+	vector<Port*> TaskFunction(vector<Port*>);
 private:
 	string name;
-	std::vector<Port> in;
-	std::vector<Port> out;
-	std::vector<Port> priv;
+	std::vector<Port*> in;
+	std::vector<Port*> out;
+	std::vector<Port*> priv;
 };
 
 class Driver{
 public:
 	Driver(string);
-	bool DriverFunction(vector<Port.value>);
-	bool Guard(vector<Port.value>);
-	string Name(){return name};
+	bool DriverFunction(vector<Port*>);
+	bool Guard(vector<Port*>);
 private:
 	string name;
-	std::vector<Port> src;
-	std::vector<Port> dst;
+	std::vector<Port*> src;
+	std::vector<Port*> dst;
 };
 
 class Mode{
 public:
 	Mode(string);
 	void SetStartMode(Mode);
-	string Name(){return name};
 private:
 	string name;
 	float period;
-	vector<Port> modePorts;
-	vector<TaskInvocation> invokes;
-	vector<ActuatorUpdate> updates;
-	vector<ModeSwitch> switches;
+	vector<Port*> modePorts;
+	vector<TaskInvocation*> invokes;
+	vector<ActuatorUpdate*> updates;
+	vector<ModeSwitch*> switches;
 	Mode startMode;
 };
 
@@ -78,6 +54,7 @@ private:
 	unsigned int frequency;
 	Task myTask;
 	Driver myDriver;
+	SchedulerTask mySchedTask;
 };
 
 class ActuatorUpdate{
@@ -103,30 +80,31 @@ private:
 
 class Config{
 public:
-	Config();
+	Config( Mode, vector<Port*>);
 private:
-	Mode m;
-	float ModeTime;
-	float TimeStamp;
-	vector<Task> ActiveTasks;
+	Mode myMode;
+	std::chrono::milliseconds ModeTime;
+	std::chrono::milliseconds TimeStamp;
+	vector<Port*> UsedPorts;
+	vector<SchedulerTask*> ActiveTasks;
 };
 
 class GiottoDirector{
 public:
-	GiottoDirector();
+	GiottoDirector(Config c);
 	Mode start;
-	void Run(vector<Task>);
-	vector<Port> GetPortList() {return portList};
-	vector<Task> GetTaskList() {return taskList};
-	vector<Driver> GetDriverList() {return driverList};
-	vector<Mode> GetModeList() {return modeList};
+	void Run(vector<TaskInvocation*>);
+	vector<Port*> GetPortList() {return portList;};
+	vector<SchedulerTask*> GetTaskList() {return taskList;};
+	vector<Driver*> GetDriverList() {return driverList;};
+	vector<Mode*> GetModeList() {return modeList;};
 private:
-	vector<Task> GenerateSchedule(vector<Task>);
+	// vector<Task*> GenerateSchedule(vector<Task*>);
 	void RunScheduled();
-	vector<Port> portList;
-	vector<Task> taskList;
-	vector<Driver> driverList;
-	vector<Mode> modeList;
+	vector<SchedulerTask*> taskList;
+	vector<Driver*> driverList;
+	vector<Mode*> modeList;
+	vector<Port*> portList;
 };
 
 #endif
