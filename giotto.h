@@ -6,39 +6,41 @@
 #include <chrono>
 #include <ctime>
 #include "scheduler.h"
+#include "actors.h"
 
 using namespace std;
 
 class Task{
 public:
-	Task(string, void (*f)(void));
-	void TaskFunction(void);
+	Task(string, Actor*);
 	string getName(){return name;};
+	Actor* getActor(){return myActor;};
 private:
 	string name;
-	void *task_function;
+	Actor* myActor;
 };
 
 class Guard{
 public:
-	Guard(string, bool (*f)());
+	Guard(string, bool (*f)(vector<Port*>), vector<Port*> );
 	bool Check();
 private:
 	string name;
-	bool GuardFunction;
+	bool (*GuardFunction)(vector<Port*>);
+	vector<Port*> myPorts;
 };
 
 class TaskInvocation{
 public:
-	TaskInvocation(Task, Guard, unsigned int);
+	TaskInvocation(Task*, Guard*, unsigned int);
 	void SetFrequency (unsigned int);
-	SchedulerTask getSchedulerTask(){return mySchedTask;};
-	Task getTask(){return myTask;}
+	SchedulerTask getSchedulerTask(){return *mySchedTask;};
+	Task getTask(){return *myTask;}
 private:
 	unsigned int frequency;
-	Task myTask;
-	Guard myGuard;
-	SchedulerTask mySchedTask;
+	Task *myTask;
+	Guard *myGuard;
+	SchedulerTask *mySchedTask;
 };
 
 
@@ -47,13 +49,14 @@ class Mode;
 
 class ModeSwitch{
 public:
-	ModeSwitch(Guard, Mode*, unsigned int);
+	ModeSwitch(Guard*, Mode*, unsigned int);
 	void SetFrequency (unsigned int);
 	void SetTargetMode (Mode*);
+	Guard* getGuard(){return myGuard;};
 private:
 	unsigned int frequency;
 	Mode* targetMode;
-	Guard myGuard;
+	Guard* myGuard;
 };
 
 // class ActuatorUpdate{
@@ -70,6 +73,7 @@ public:
 	Mode(string, vector<TaskInvocation*>, vector<ModeSwitch*>);
 	vector<SchedulerTask*> getScheduledTasks(){return schedTasks;};
 	Task findTask(string);
+	vector<ModeSwitch*> getSwitches(){return switches;};
 private:
 	string name;
 	std::chrono::milliseconds period;

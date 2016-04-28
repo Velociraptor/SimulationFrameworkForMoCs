@@ -11,23 +11,19 @@ using namespace std;
 
 //	Giotto components definitions
 
-Task::Task(string nameIn,  void (*f)() ) {
+Task::Task(string nameIn,  Actor* a ) {
 	name = nameIn;
-	task_function = f();
-
+	myActor = a;
 }
 
-Task::TaskFunction() {
-	task_function();
-}
-
-Guard::Guard(string nameIn, bool (*f)()) {
+Guard::Guard(string nameIn, bool (*f)(vector<Port*>), vector<Port*> p) {
 	name = nameIn;
-	GuardFunction = f();
+	GuardFunction = f;
+	myPorts = p;
 }
 
 bool Guard::Check() {
-	return GuardFunction;
+	return GuardFunction(myPorts);
 }
 
 Mode::Mode(string nameIn, vector<TaskInvocation*> t, vector<ModeSwitch*> ms) {
@@ -58,14 +54,13 @@ Task Mode::findTask(string taskName){
 	printf("No task of that name!\n");
 }
 
-TaskInvocation::TaskInvocation(Task t, Guard g, unsigned int f) {
+TaskInvocation::TaskInvocation(Task* t, Guard* g, unsigned int f) {
 	myTask = t;
 	myGuard = g;
 	frequency = f;
 	int period = (int)1000/frequency;
 	std::chrono::milliseconds m(period);
-	SchedulerTask myShedulerTask = new SchedulerTask( myTask.getName(), m);
-	mySchedTask = myShedulerTask;
+	mySchedTask = new SchedulerTask(myTask->getName(), m);
 }
 
 void TaskInvocation::SetFrequency (unsigned int f) {
@@ -81,7 +76,7 @@ void TaskInvocation::SetFrequency (unsigned int f) {
 // 	frequency = f;
 // }
 
-ModeSwitch::ModeSwitch(Guard g, Mode* m, unsigned int f) {
+ModeSwitch::ModeSwitch(Guard* g, Mode* m, unsigned int f) {
 	myGuard = g;
 	targetMode = m;
 	frequency = f;
@@ -109,7 +104,7 @@ GiottoDirector::GiottoDirector(Mode* m) {
 
 void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 	currentMode = startMode;
-	enabledTasks = currentMode->schedTasks;
+	enabledTasks = currentMode->getScheduledTasks();
 	activeTasks = enabledTasks;
 	while(currentTime < maxRunTime){
 		invokeNextTask();
@@ -125,10 +120,19 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 }
 
 void GiottoDirector::invokeNextTask(){
+	string curr_task_name = activeTasks[0]->getID();
+	Task curr_task = currentMode->findTask(curr_task_name);
+	curr_task.getActor()->Compute();
 }
 
 bool GiottoDirector::checkMode(){
-
+	vector<ModeSwitch*> possible_switches = currentMode->getSwitches();
+	//Check frequency
+	for (int i = 0; i < possible_switches.size(); ++i)
+	{
+		return (possible_switches[i]->getGuard()->Check());
+	}
+	return false;
 }
 
 void GiottoDirector::updateMode(){
