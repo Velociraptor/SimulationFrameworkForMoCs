@@ -21,7 +21,7 @@ private:
 };
 
 // Define trivially true guard
-bool trivialTrueGuard () { return true; }
+bool trivialTrueGuard (vector<Port*>);
 
 class Guard{
 public:

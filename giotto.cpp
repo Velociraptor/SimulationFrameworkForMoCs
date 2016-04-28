@@ -16,6 +16,8 @@ Task::Task(string nameIn,  Actor* a ) {
 	myActor = a;
 }
 
+bool trivialTrueGuard (vector<Port*>) { return true; }
+
 Guard::Guard(string nameIn, bool (*f)(vector<Port*>), vector<Port*> p) {
 	name = nameIn;
 	GuardFunction = f;
@@ -31,13 +33,13 @@ Mode::Mode(string nameIn, vector<TaskInvocation*> t) {
 	invokes = t;
 	//Schedule the tasks
 	vector<SchedulerTask> unorderedTasks;
-	for (int i = 0; i < invokes.size(); ++i)
+	for (unsigned int i = 0; i < invokes.size(); ++i)
 	{
 		unorderedTasks.push_back(invokes[i]->getSchedulerTask());
 	}
 	vector<SchedulerTask> scheduledTasks = getSchedule(unorderedTasks);
 	vector<SchedulerTask*> refScheduledTasks;
-	for (int i = 0; i < scheduledTasks.size(); ++i)
+	for (unsigned int i = 0; i < scheduledTasks.size(); ++i)
 	{
 		refScheduledTasks.push_back(&scheduledTasks[i]);
 	}
@@ -45,7 +47,7 @@ Mode::Mode(string nameIn, vector<TaskInvocation*> t) {
 }
 
 Task Mode::findTask(string taskName){
-	for (int i = 0; i < invokes.size(); ++i)
+	for (unsigned int i = 0; i < invokes.size(); ++i)
 	{
 		if(invokes[i]->getTask().getName().compare(taskName)==0)
 			return (invokes[i]->getTask());
@@ -127,7 +129,7 @@ void GiottoDirector::invokeNextTask(){
 
 Mode* GiottoDirector::checkNextMode(){
 	//Check frequency
-	for (int i = 0; i < allTheSwitches.size(); ++i)
+	for (unsigned int i = 0; i < allTheSwitches.size(); ++i)
 	{
 		if(allTheSwitches[i]->getSource()->getName().compare(currentMode->getName()) == 0){
 			if(allTheSwitches[i]->getGuard()->Check()){

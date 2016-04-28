@@ -6,13 +6,35 @@ using namespace std;
 
 // Port constructors
 Port::Port (string name, PortContents portInit) {
+	cout << "Creating Port " << name << endl;
 	myName = name;
 	myContents = portInit;
+}
+
+void Port::SetValueBool(bool b){
+	cout << "Port " << myName << " new bool value: " << b << endl;
+	myContents.portValue.valBool = bool(b);
+}
+
+void Port::SetValueInt(int i){
+	cout << "Port " << myName << " new int value: " << i << endl;
+	myContents.portValue.valInt = int(i);
+}
+
+void Port::SetValueFloat(float f){
+	cout << "Port " << myName << " new float value: " << f << endl;
+	myContents.portValue.valFloat = float(f);
+}
+
+void Port::SetValueDouble(double d){
+	cout << "Port " << myName << " new double value: " << d << endl;
+	myContents.portValue.valDouble = double(d);
 }
 
 // Actor constructor
 Actor::Actor (string name, vector<Port*> inputPorts, 
 	vector<Port*> outputPorts) {
+	cout << "Creating Actor " << name << endl;
 	myName = name;
 	myInputs = inputPorts;
 	myOutputs = outputPorts;
@@ -28,6 +50,7 @@ string ComparatorGreater::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void ComparatorGreater::Compute () {
+	cout << "Actor " << Name() << " computing" << endl;
 	bool output = false;
 	PortType pt = myInputs[0]->Type();
 	switch (pt) {
@@ -74,6 +97,7 @@ string RandomIntInRange::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void RandomIntInRange::Compute () {
+	cout << "Actor " << Name() << " computing" << endl;
 	int rangeBottom = 0;
 	int rangeTop = myInputs[0]->GetValueInt();
 	int output = rangeBottom + (rand() % (int)(rangeTop - rangeBottom + 1));
@@ -88,6 +112,7 @@ string AccumulatorWithReset::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void AccumulatorWithReset::Compute () {
+	cout << "Actor " << Name() << " computing" << endl;
 	// check reset and set output to zero if appropriate
 	// (and set reset port back to false) 
 	bool reset = myInputs[1]->GetValueBool();
@@ -116,6 +141,7 @@ string Difference::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void Difference::Compute () {
+	cout << "Actor " << Name() << " computing" << endl;
 	int diff = myInputs[0]->GetValueInt() - myInputs[1]->GetValueInt();
 	myOutputs[0]->SetValueInt(diff);
 }
@@ -127,6 +153,7 @@ string Trigger::ActorType () {
 
 // Set output port value to true
 void Trigger::Compute () {
+	cout << "Actor " << Name() << " computing" << endl;
 	myOutputs[0]->SetValueBool(true);
 }
 

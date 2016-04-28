@@ -16,9 +16,6 @@ vector<SchedulerTask> getSchedule(vector<SchedulerTask> unorderedTasks){
 	return unorderedTasks;
 }
 
-int main(){
-	return 0;
-}
 // Testing
 
 
