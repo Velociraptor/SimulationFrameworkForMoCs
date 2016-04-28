@@ -37,8 +37,8 @@ class TaskInvocation{
 public:
 	TaskInvocation(Task*, Guard*, unsigned int);
 	void SetFrequency (unsigned int);
-	SchedulerTask getSchedulerTask(){return *mySchedTask;};
-	Task getTask(){return *myTask;}
+	SchedulerTask* getSchedulerTask(){return mySchedTask;};
+	Task* getTask(){return myTask;}
 private:
 	unsigned int frequency;
 	Task *myTask;
@@ -77,8 +77,9 @@ class Mode{
 public:
 	Mode(string, vector<TaskInvocation*>);
 	vector<SchedulerTask*> getScheduledTasks(){return schedTasks;};
-	Task findTask(string);
+	Task* findTask(string);
 	string getName(){return name;};
+	vector<TaskInvocation*> getInvokes(){return invokes;};
 private:
 	string name;
 	std::chrono::milliseconds period;

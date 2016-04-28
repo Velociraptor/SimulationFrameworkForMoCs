@@ -32,28 +32,23 @@ Mode::Mode(string nameIn, vector<TaskInvocation*> t) {
 	name = nameIn;
 	invokes = t;
 	//Schedule the tasks
-	vector<SchedulerTask> unorderedTasks;
+	vector<SchedulerTask*> unorderedTasks;
 	for (unsigned int i = 0; i < invokes.size(); ++i)
 	{
 		unorderedTasks.push_back(invokes[i]->getSchedulerTask());
 	}
-	vector<SchedulerTask> scheduledTasks = getSchedule(unorderedTasks);
-	vector<SchedulerTask*> refScheduledTasks;
-	for (unsigned int i = 0; i < scheduledTasks.size(); ++i)
-	{
-		refScheduledTasks.push_back(&scheduledTasks[i]);
-	}
-	schedTasks = refScheduledTasks;
+	vector<SchedulerTask*> scheduledTasks = getSchedule(unorderedTasks);
+	schedTasks = scheduledTasks;
 }
 
-Task Mode::findTask(string taskName){
+Task* Mode::findTask(string taskName){
 	for (unsigned int i = 0; i < invokes.size(); ++i)
 	{
-		if(invokes[i]->getTask().getName().compare(taskName)==0)
+		if(invokes[i]->getTask()->getName().compare(taskName)==0)
 			return (invokes[i]->getTask());
-	}
-	printf("No task of that name!\n");
-	return Task(taskName,NULL);
+	}	
+	cout<<"No task of that name!\n";
+	return (new Task(taskName,NULL));
 }
 
 TaskInvocation::TaskInvocation(Task* t, Guard* g, unsigned int f) {
@@ -100,13 +95,15 @@ void ModeSwitch::SetFrequency (unsigned int f) {
 GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches) {
 	startMode = m;
 	allTheSwitches = switches;
+	currentMode = m;
 }
 
 void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
-	currentMode = startMode;
+	currentMode = startMode; 
 	Mode* nextMode;
 	enabledTasks = currentMode->getScheduledTasks();
 	activeTasks = enabledTasks;
+
 	while(currentTime < maxRunTime){
 		invokeNextTask();
 		nextMode = checkNextMode();
@@ -123,8 +120,8 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 
 void GiottoDirector::invokeNextTask(){
 	string curr_task_name = activeTasks[0]->getID();
-	Task curr_task = currentMode->findTask(curr_task_name);
-	curr_task.getActor()->Compute();
+	Task* curr_task = currentMode->findTask(curr_task_name);
+	curr_task->getActor()->Compute();
 }
 
 Mode* GiottoDirector::checkNextMode(){
@@ -151,4 +148,3 @@ void GiottoDirector::updateActiveTasks(){
 void GiottoDirector::advanceTime(){
 
 }
-int main(){return 0;}
