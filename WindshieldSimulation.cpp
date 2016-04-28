@@ -41,6 +41,7 @@ int main() {
 
 	// Weather Model simulates rainfall as a random int per [unit time]
 	// input port: range of rain creation
+	srand((unsigned)time(NULL));
 	PortValue pvRainGenRange;
 	pvRainGenRange.valInt = 100;
 	PortContents pcRainGenRange = {INT, pvRainGenRange};

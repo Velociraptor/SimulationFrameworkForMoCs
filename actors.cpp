@@ -1,5 +1,6 @@
 #include "actors.h"
 #include <iostream>
+// #include <chrono>
 #include <time.h>
 #include <stdlib.h>
 using namespace std;
@@ -183,13 +184,20 @@ void Trigger::Compute () {
 // 	compy.Compute();
 // 	cout << "compy says " << compy.GetOutputs()[0]->GetValueBool() << " for 10>5" << endl;
 // 	// cout << "compy inputs: " << compy.GetInputs()[0]->GetValueInt() << " " << compy.GetInputs()[1]->GetValueInt() << endl;
-// 	Port *aa = new Port(string("aa"), INT, 100);
-// 	Port *oo = new Port(string("out"), INT, 0);
+// 	srand((unsigned)time(NULL));
+// 	PortValue pvaa;
+// 	pvaa.valInt = 100;
+// 	PortContents pcaa = {INT, pvaa};
+// 	PortValue pvbb;
+// 	pvbb.valInt = 100;
+// 	PortContents pcbb = {INT, pvbb};
+// 	Port *aa = new Port(string("aa"), pcaa);
+// 	Port *oo = new Port(string("out"), pcbb);
 // 	vector<Port*> viip = vector<Port*>();
 // 	vector<Port*> voop = vector<Port*>();
 // 	viip.push_back(aa);
 // 	voop.push_back(oo);
-// 	srand(time(NULL));
+// 	// srand(time(NULL));
 // 	RandomIntInRange randy = RandomIntInRange(string("randy"), viip, voop);
 // 	for (int i=0;i<10;i++) {
 // 		randy.Compute();
