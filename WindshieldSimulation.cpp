@@ -98,11 +98,11 @@ int main() {
 	// set mode list & set start mode ???
 	// Initialize tasks and stuff, get a schedule for the given mode,
 	// and start the director running...
-	vector<Mode*> modeVector;
-	modeVector.push_back(lowRainMode);
-	modeVector.push_back(medRainMode);
-	modeVector.push_back(highRainMode);
-	GiottoDirector giottoD = new GiottoDirector(modeVector, lowRainMode);
+	// vector<Mode*> modeVector;
+	// modeVector.push_back(lowRainMode);
+	// modeVector.push_back(medRainMode);
+	// modeVector.push_back(highRainMode);
+	GiottoDirector giottoD = new GiottoDirector(lowRainMode);
 	// port and driver lists ???
 	giottoD.Run();
 
