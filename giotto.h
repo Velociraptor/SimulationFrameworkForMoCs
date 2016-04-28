@@ -16,7 +16,7 @@ public:
 	void TaskFunction(void);
 private:
 	string name;
-	void *TaskFunction;
+	void *task_function;
 };
 
 class Guard
@@ -30,7 +30,7 @@ private:
 
 class Mode{
 public:
-	Mode(string, vector<TaskInvocation*>);
+	Mode(string, vector<TaskInvocation*>, vector<ModeSwitch*>);
 	getScheduledTasks(){return schedTasks;};
 private:
 	string name;
@@ -87,22 +87,23 @@ private:
 class GiottoDirector{
 public:
 	GiottoDirector(Mode*);
-	void Run();
+	void Run(std::chrono::milliseconds);
 	vector<SchedulerTask*> GetEnabledTaskList() {return enabledTasks;};
+	vector<SchedulerTask*> GetActiveTaskList() {return activeTasks;};
 
-	void invokeNextTask();
-	void checkMode();
-	void updateMode();
-	void updateModeTime();
-	void updateActiveTasks();
-	void advanceTime();
 private:
 
-	void RunScheduled();
+	Mode* startMode
 	vector<SchedulerTask*> enabledTasks;
 	vector<SchedulerTask*> activeTasks;
 	std::chrono::milliseconds modeTime;
 	std::chrono::milliseconds currentTime;
+	void invokeNextTask();
+	bool checkMode();
+	void updateMode();
+	void updateModeTime();
+	void updateActiveTasks();
+	void advanceTime();
 
 };
 
