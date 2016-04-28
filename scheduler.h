@@ -26,8 +26,8 @@ private:
 	std::chrono::milliseconds myPeriod;
 };
 
-bool sortByPeriod (SchedulerTask lhs, SchedulerTask rhs);
+static bool sortByPeriod (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPeriod() < rhs->getPeriod(); }
 
-vector<SchedulerTask> getSchedule(vector<SchedulerTask> unorderedTasks);
+vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks);
 
 #endif
