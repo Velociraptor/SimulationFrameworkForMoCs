@@ -87,6 +87,7 @@ public:
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	string ActorType();
 	void Compute();
+	// void Reset();
 };
 
 // difference
@@ -95,6 +96,17 @@ public:
 class Difference : public Actor {
 public:
 	Difference(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	string ActorType();
+	void Compute();
+};
+
+// trigger
+// expected input ports: none
+// expected output ports: 1 - bool (true when triggered)
+class Trigger : public Actor {
+public:
+	Trigger(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
 	string ActorType();
 	void Compute();

@@ -108,6 +108,11 @@ void AccumulatorWithReset::Compute () {
 	}
 }
 
+// // Set reset input port high to trigger reset on next Compute()
+// void AccumulatorWithReset::Reset () {
+// 	myInputs[1]->SetValueBool(true);
+// }
+
 // Return actor type
 string Difference::ActorType () {
 	return "Difference";
@@ -118,6 +123,16 @@ string Difference::ActorType () {
 void Difference::Compute () {
 	int diff = myInputs[0]->GetValueInt() - myInputs[1]->GetValueInt();
 	myOutputs[0]->SetValueInt(diff);
+}
+
+// Return actor type
+string Trigger::ActorType () {
+	return "Trigger";
+}
+
+// Set output port value to true
+void Trigger::Compute () {
+	myOutputs[0]->SetValueBool(true);
 }
 
 // Unit Testing
