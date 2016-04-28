@@ -26,9 +26,8 @@ bool Guard::Check() {
 	return GuardFunction(myPorts);
 }
 
-Mode::Mode(string nameIn, vector<TaskInvocation*> t, vector<ModeSwitch*> ms) {
+Mode::Mode(string nameIn, vector<TaskInvocation*> t) {
 	name = nameIn;
-	switches = ms;
 	invokes = t;
 	//Schedule the tasks
 	vector<SchedulerTask> unorderedTasks;
@@ -52,6 +51,7 @@ Task Mode::findTask(string taskName){
 			return (invokes[i]->getTask());
 	}
 	printf("No task of that name!\n");
+	return Task(taskName,NULL);
 }
 
 TaskInvocation::TaskInvocation(Task* t, Guard* g, unsigned int f) {
@@ -76,18 +76,15 @@ void TaskInvocation::SetFrequency (unsigned int f) {
 // 	frequency = f;
 // }
 
-ModeSwitch::ModeSwitch(Guard* g, Mode* m, unsigned int f) {
+ModeSwitch::ModeSwitch(Guard* g, Mode* from, Mode* to, unsigned int f) {
 	myGuard = g;
-	targetMode = m;
+	destMode = to;
+	srcMode = from;
 	frequency = f;
 }
 
 void ModeSwitch::SetFrequency (unsigned int f) {
 	frequency = f;
-}
-
-void ModeSwitch::SetTargetMode (Mode* m) {
-	targetMode = m;
 }
 
 
@@ -98,17 +95,20 @@ void ModeSwitch::SetTargetMode (Mode* m) {
 // 	ModeTime = new std::chrono::milliseconds(0);
 // }
 
-GiottoDirector::GiottoDirector(Mode* m) {
+GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches) {
 	startMode = m;
+	allTheSwitches = switches;
 }
 
 void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 	currentMode = startMode;
+	Mode* nextMode;
 	enabledTasks = currentMode->getScheduledTasks();
 	activeTasks = enabledTasks;
 	while(currentTime < maxRunTime){
 		invokeNextTask();
-		if (checkMode()){
+		nextMode = checkNextMode();
+		if (nextMode->getName().compare(currentMode->getName()) != 0){
 			updateMode();
 			// modeTime = new std::chrono::milliseconds(0);
 		}
@@ -125,18 +125,21 @@ void GiottoDirector::invokeNextTask(){
 	curr_task.getActor()->Compute();
 }
 
-bool GiottoDirector::checkMode(){
-	vector<ModeSwitch*> possible_switches = currentMode->getSwitches();
+Mode* GiottoDirector::checkNextMode(){
 	//Check frequency
-	for (int i = 0; i < possible_switches.size(); ++i)
+	for (int i = 0; i < allTheSwitches.size(); ++i)
 	{
-		return (possible_switches[i]->getGuard()->Check());
+		if(allTheSwitches[i]->getSource()->getName().compare(currentMode->getName()) == 0){
+			if(allTheSwitches[i]->getGuard()->Check()){
+				return allTheSwitches[i]->getDest();
+			}
+		}
 	}
-	return false;
+	return currentMode;
 }
 
 void GiottoDirector::updateMode(){
-
+	// currentMode = nextMode->getTargetMode();
 }
 
 void GiottoDirector::updateModeTime(){
