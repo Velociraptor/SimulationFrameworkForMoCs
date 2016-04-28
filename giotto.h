@@ -116,7 +116,6 @@ private:
 	std::chrono::milliseconds currentTime;
 	void invokeNextTask();
 	Mode* checkNextMode();
-	void updateMode();
 	void updateModeTime();
 	void updateActiveTasks();
 	void advanceTime();
