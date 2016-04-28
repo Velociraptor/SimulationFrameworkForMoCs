@@ -36,10 +36,7 @@ int main() {
 	unsigned int rainRateCheckFreq = 2000;
 	TaskInvocation rainRateInvoke = new TaskInvocation(checkRainfallRate, rainRateGuard, rainRateCheckFreq);
 
-	// Modes and switching logic for wiper speed based on tracked rate of rainfall
-	Mode lowRainMode = new Mode(); // ???
-	Mode medRainMode = new Mode();
-	Mode highRainMode = new Mode();
+	// Mode task invocations and switching logic for wiper speed based on tracked rate of rainfall
 	vector<TaskInvocation> lowRainTaskList;
 	vector<TaskInvocation> medRainTaskList;
 	vector<TaskInvocation> highRainTaskList;
@@ -108,27 +105,22 @@ int main() {
 	Guard highRainGuard = new Guard("highRainGuard", rainRateHigh); // set guard: rainfall rate check in high range
 	ModeSwitch wiperSpeedHighSwitch = new ModeSwitch(highRainGuard, highRainMode, modeSwitchCheckFreq);
 
-	// More mode setup
-	// Set invocations for each mode to xxxWiperInvoke
 	// Set mode switches for each mode to other two wiperSpeedXxx
-	lowRainMode.setInvokes(lowRainTaskList);
-	medRainMode.setInvokes(medRainTaskList);
-	highRainMode.setInvokes(highRainTaskList);
 	vector<ModeSwitch> lowRainModeSwitches;
 	lowRainModeSwitches.push_back(wiperSpeedMedSwitch);
 	lowRainModeSwitches.push_back(wiperSpeedHighSwitch);
-	lowRainMode.setModeSwitches(lowRainModeSwitches);
 	vector<ModeSwitch> medRainModeSwitches;
 	medRainModeSwitches.push_back(wiperSpeedLowSwitch);
 	medRainModeSwitches.push_back(wiperSpeedHighSwitch);
-	medRainMode.setModeSwitches(medRainModeSwitches);
 	vector<ModeSwitch> highRainModeSwitches;
 	highRainModeSwitches.push_back(wiperSpeedLowSwitch);
 	highRainModeSwitches.push_back(wiperSpeedMedSwitch);
-	highRainMode.setModeSwitches(highRainModeSwitches);
 
-	// Pass (start mode) task list to Giotto director to run simulation
-	// .......
+	// Mode setup
+	Mode lowRainMode = new Mode("lowRainMode", lowRainTaskList, lowRainModeSwitches);
+	Mode medRainMode = new Mode("medRainMode", medRainTaskList, medRainModeSwitches);
+	Mode highRainMode = new Mode("highRainMode", highRainTaskList, highRainModeSwitches);
+
 	// Initialize director with start mode and kick off simulation
 	GiottoDirector giottoD = new GiottoDirector(lowRainMode);
 	giottoD.Run();
