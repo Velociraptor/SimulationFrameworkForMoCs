@@ -6,7 +6,6 @@
 #include <chrono>
 #include <ctime>
 #include "scheduler.h"
-#include "actors.h"
 
 using namespace std;
 
@@ -14,38 +13,27 @@ class Task{
 public:
 	Task(string, void (*f)(void));
 	void TaskFunction(void);
+	string getName(){return name;};
 private:
 	string name;
 	void *task_function;
 };
 
-class Guard
+class Guard{
 public:
 	Guard(string, bool (*f)());
 	bool Check();
 private:
 	string name;
-	void *GuardFunction;
-};
-
-class Mode{
-public:
-	Mode(string, vector<TaskInvocation*>, vector<ModeSwitch*>);
-	getScheduledTasks(){return schedTasks;};
-private:
-	string name;
-	std::chrono::milliseconds period;
-	vector<TaskInvocation*> invokes;
-	vector<SchedulerTask*> schedTasks;
-	// vector<ActuatorUpdate*> updates;
-	vector<ModeSwitch*> switches;
+	bool GuardFunction;
 };
 
 class TaskInvocation{
 public:
 	TaskInvocation(Task, Guard, unsigned int);
 	void SetFrequency (unsigned int);
-	SchedulerTask GetSchedulerTask();
+	SchedulerTask getSchedulerTask(){return mySchedTask;};
+	Task getTask(){return myTask;}
 private:
 	unsigned int frequency;
 	Task myTask;
@@ -53,14 +41,9 @@ private:
 	SchedulerTask mySchedTask;
 };
 
-// class ActuatorUpdate{
-// public:
-// 	ActuatorUpdate(Guard, unsigned int);
-// 	void SetFrequency (unsigned int);
-// private:
-// 	unsigned int frequency;
-// 	Guard myGuard;
-// };
+
+
+class Mode;
 
 class ModeSwitch{
 public:
@@ -73,6 +56,28 @@ private:
 	Guard myGuard;
 };
 
+// class ActuatorUpdate{
+// public:
+// 	ActuatorUpdate(Guard, unsigned int);
+// 	void SetFrequency (unsigned int);
+// private:
+// 	unsigned int frequency;
+// 	Guard myGuard;
+// };
+
+class Mode{
+public:
+	Mode(string, vector<TaskInvocation*>, vector<ModeSwitch*>);
+	vector<SchedulerTask*> getScheduledTasks(){return schedTasks;};
+	Task findTask(string);
+private:
+	string name;
+	std::chrono::milliseconds period;
+	vector<TaskInvocation*> invokes;
+	vector<SchedulerTask*> schedTasks;
+	// vector<ActuatorUpdate*> updates;
+	vector<ModeSwitch*> switches;
+};
 
 // class Config{
 // public:
@@ -93,7 +98,8 @@ public:
 
 private:
 
-	Mode* startMode
+	Mode* startMode;
+	Mode* currentMode;
 	vector<SchedulerTask*> enabledTasks;
 	vector<SchedulerTask*> activeTasks;
 	std::chrono::milliseconds modeTime;

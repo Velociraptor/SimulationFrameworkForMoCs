@@ -5,7 +5,7 @@
 #include <ctime>
 #include "giotto.h"
 #include "scheduler.h"
-#include "actor.h"
+#include "actors.h"
 
 using namespace std;
 
@@ -36,9 +36,9 @@ Mode::Mode(string nameIn, vector<TaskInvocation*> t, vector<ModeSwitch*> ms) {
 	invokes = t;
 	//Schedule the tasks
 	vector<SchedulerTask> unorderedTasks;
-	for (int i = 0; i < activeTasks.size(); ++i)
+	for (int i = 0; i < invokes.size(); ++i)
 	{
-		unorderedTasks.push_back(invokes->mySchedTask);
+		unorderedTasks.push_back(invokes[i]->getSchedulerTask());
 	}
 	vector<SchedulerTask> scheduledTasks = getSchedule(unorderedTasks);
 	vector<SchedulerTask*> refScheduledTasks;
@@ -49,24 +49,27 @@ Mode::Mode(string nameIn, vector<TaskInvocation*> t, vector<ModeSwitch*> ms) {
 	schedTasks = refScheduledTasks;
 }
 
+Task Mode::findTask(string taskName){
+	for (int i = 0; i < invokes.size(); ++i)
+	{
+		if(invokes[i]->getTask().getName() == taskName)
+			return (invokes[i]->getTask());
+	}
+	printf("No task of that name!\n");
+}
 
 TaskInvocation::TaskInvocation(Task t, Guard g, unsigned int f) {
 	myTask = t;
 	myGuard = g;
 	frequency = f;
-	mySchedTask = GetSchedulerTask();
+	int period = (int)1000/frequency;
+	std::chrono::milliseconds m(period);
+	SchedulerTask myShedulerTask = new SchedulerTask( myTask.getName(), m);
+	mySchedTask = myShedulerTask;
 }
 
 void TaskInvocation::SetFrequency (unsigned int f) {
 	frequency = f;
-}
-
-SchedulerTask TaskInvocation::GetSchedulerTask() {
-	// return in scheduler task format (id and period)
-	int period = (int)1000/frequency;
-	std::chrono::milliseconds m(period);
-	SchedulerTask myShedulerTask = new SchedulerTask( myTask.name, m);
-	return myShedulerTask;
 }
 
 // ActuatorUpdate::ActuatorUpdate(Guard g, unsigned int f) {
@@ -92,6 +95,7 @@ void ModeSwitch::SetTargetMode (Mode m) {
 	targetMode = m;
 }
 
+
 // Config::Config (Mode startMode) {
 // 	myMode.setStartMode(startMode);
 // 	ActiveTasks = NULL;
@@ -104,11 +108,14 @@ GiottoDirector::GiottoDirector(Mode* m) {
 }
 
 void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
+	currentMode = startMode;
+	enabledTasks = currentMode->schedTasks;
+	activeTasks = enabledTasks;
 	while(currentTime < maxRunTime){
 		invokeNextTask();
 		if (checkMode()){
 			updateMode();
-			modeTime = 0;
+			// modeTime = new std::chrono::milliseconds(0);
 		}
 		else
 			updateModeTime();
@@ -118,7 +125,6 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 }
 
 void GiottoDirector::invokeNextTask(){
-
 }
 
 bool GiottoDirector::checkMode(){
