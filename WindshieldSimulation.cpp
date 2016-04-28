@@ -10,10 +10,6 @@ int main() {
 	// Giotto simulation
 	cout << "Starting Simulation Using Giotto" << endl;
 
-	// Initialize tasks and stuff, get a schedule for the given mode,
-	// and start the director running...
-	GiottoDirector giottoD = new GiottoDirector();
-
 	// Weather Model simulates rainfall as a random int per [unit time]
 	RandomIntInRange weatherModel = new RandomIntInRange("WeatherModel",20);
 	Task generateRainfall = new Task("MakeItRain", weatherModel.Compute());
@@ -100,9 +96,15 @@ int main() {
 	// Pass (start mode) task list to Giotto director to run simulation
 	// .......
 	// set mode list & set start mode ???
-	giottoD.setStartMode(lowRainMode);
+	// Initialize tasks and stuff, get a schedule for the given mode,
+	// and start the director running...
+	// vector<Mode*> modeVector;
+	// modeVector.push_back(lowRainMode);
+	// modeVector.push_back(medRainMode);
+	// modeVector.push_back(highRainMode);
+	GiottoDirector giottoD = new GiottoDirector(lowRainMode);
 	// port and driver lists ???
-	giottoD.Run(lowRainTaskList);
+	giottoD.Run();
 
 
 
