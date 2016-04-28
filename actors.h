@@ -8,36 +8,36 @@ using namespace std;
 
 typedef enum PortType{ BOOL, INT, FLOAT, DOUBLE } PortType;
 
-typedef union value{
-	bool myValueBool;
-	int myValueInt;
-	float myValueFloat;
-	double myValueDouble;
+typedef union PortValue{
+	bool valBool;
+	int valInt;
+	float valFloat;
+	double valDouble;
 } PortValue;
+
+typedef struct PortContents{
+	PortType portType;
+	PortValue portValue;
+} PortContents;
 
 // shared notion of Ports
 class Port{
 public:
-	Port(string, PortType, PortValue);
-	Port(string, PortType, bool);
-	Port(string, PortType, int);
-	Port(string, PortType, float);
-	Port(string, PortType, double);
+	Port(string, PortContents);
 	string Name(){return myName;};
-	PortType Type(){return myType;};
-	PortValue GetValue(){return myValue;};
-	bool GetValueBool(){return myValue.myValueBool;};
-	int GetValueInt(){return myValue.myValueInt;};
-	float GetValueFloat(){return myValue.myValueFloat;};
-	double GetValueDouble(){return myValue.myValueDouble;};
-	void SetValueBool(bool b){myValue.myValueBool = b;};
-	void SetValueInt(int i){myValue.myValueInt = i;};
-	void SetValueFloat(float f){myValue.myValueFloat = f;};
-	void SetValueDouble(double d){myValue.myValueDouble = d;};
+	PortType Type(){return myContents.portType;};
+	PortContents GetContents(){return myContents;};
+	bool GetValueBool(){return bool(myContents.portValue.valBool);};
+	int GetValueInt(){return int(myContents.portValue.valInt);};
+	float GetValueFloat(){return float(myContents.portValue.valFloat);};
+	double GetValueDouble(){return double(myContents.portValue.valDouble);};
+	void SetValueBool(bool b){myContents.portValue.valBool = bool(b);};
+	void SetValueInt(int i){myContents.portValue.valInt = int(i);};
+	void SetValueFloat(float f){myContents.portValue.valFloat = float(f);};
+	void SetValueDouble(double d){myContents.portValue.valDouble = double(d);};
 private:
 	string myName;
-	PortType myType;
-	PortValue myValue;
+	PortContents myContents;
 };
 
 // generic Actor base class
