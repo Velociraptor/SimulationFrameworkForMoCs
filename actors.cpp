@@ -151,67 +151,68 @@ void Difference::Compute () {
 	myOutputs[0]->SetValueInt(diff);
 }
 
-int main() {
-	Port *a = new Port(string("a"), INT, 1);
-	Port *b = new Port(string("b"), INT, 5);
-	Port *o = new Port(string("out"), BOOL, false);
-	vector<Port*> vip = vector<Port*>();
-	vector<Port*> vop = vector<Port*>();
-	vip.push_back(a);
-	vip.push_back(b);
-	vop.push_back(o);
-	ComparatorGreater compy = ComparatorGreater(string("compy"), vip, vop);
-	compy.Compute();
-	cout << "compy says " << compy.GetOutputs()[0]->GetValueBool() << " for 1>5" << endl;
-	a->SetValueInt(10);
-	compy.Compute();
-	cout << "compy says " << compy.GetOutputs()[0]->GetValueBool() << " for 10>5" << endl;
+// Unit Testing
+// int main() {
+// 	Port *a = new Port(string("a"), INT, 1);
+// 	Port *b = new Port(string("b"), INT, 5);
+// 	Port *o = new Port(string("out"), BOOL, false);
+// 	vector<Port*> vip = vector<Port*>();
+// 	vector<Port*> vop = vector<Port*>();
+// 	vip.push_back(a);
+// 	vip.push_back(b);
+// 	vop.push_back(o);
+// 	ComparatorGreater compy = ComparatorGreater(string("compy"), vip, vop);
+// 	compy.Compute();
+// 	cout << "compy says " << compy.GetOutputs()[0]->GetValueBool() << " for 1>5" << endl;
+// 	a->SetValueInt(10);
+// 	compy.Compute();
+// 	cout << "compy says " << compy.GetOutputs()[0]->GetValueBool() << " for 10>5" << endl;
 	
-	Port *aa = new Port(string("aa"), INT, 100);
-	Port *oo = new Port(string("out"), INT, 0);
-	vector<Port*> viip = vector<Port*>();
-	vector<Port*> voop = vector<Port*>();
-	viip.push_back(aa);
-	voop.push_back(oo);
-	srand(time(NULL));
-	RandomIntInRange randy = RandomIntInRange(string("randy"), viip, voop);
-	for (int i=0;i<10;i++) {
-		randy.Compute();
-		cout << "randy says " << randy.GetOutputs()[0]->GetValueInt() << " out of 100" << endl;
-	}
+// 	Port *aa = new Port(string("aa"), INT, 100);
+// 	Port *oo = new Port(string("out"), INT, 0);
+// 	vector<Port*> viip = vector<Port*>();
+// 	vector<Port*> voop = vector<Port*>();
+// 	viip.push_back(aa);
+// 	voop.push_back(oo);
+// 	srand(time(NULL));
+// 	RandomIntInRange randy = RandomIntInRange(string("randy"), viip, voop);
+// 	for (int i=0;i<10;i++) {
+// 		randy.Compute();
+// 		cout << "randy says " << randy.GetOutputs()[0]->GetValueInt() << " out of 100" << endl;
+// 	}
 
-	Port *in = new Port(string("in"), INT, 2);
-	Port *reset = new Port(string("reset"), BOOL, false);
-	Port *out = new Port(string("outt"), INT, 0);
-	vector<Port*> vinp = vector<Port*>();
-	vector<Port*> voutp = vector<Port*>();
-	vinp.push_back(in);
-	vinp.push_back(reset);
-	voutp.push_back(out);
-	AccumulatorWithReset acc = AccumulatorWithReset(string("accy"), vinp, voutp);
-	for (int i=1;i<12;i++) {
-		acc.Compute();
-		in->SetValueInt(i);
-		if (i%5 == 0) {
-			reset->SetValueBool(true);
-		}
-		cout << "accy says " << acc.GetOutputs()[0]->GetValueInt() << " now + " << i << " reset " << reset->GetValueBool() << endl;
-	}
+// 	Port *in = new Port(string("in"), INT, 2);
+// 	Port *reset = new Port(string("reset"), BOOL, false);
+// 	Port *out = new Port(string("outt"), INT, 0);
+// 	vector<Port*> vinp = vector<Port*>();
+// 	vector<Port*> voutp = vector<Port*>();
+// 	vinp.push_back(in);
+// 	vinp.push_back(reset);
+// 	voutp.push_back(out);
+// 	AccumulatorWithReset acc = AccumulatorWithReset(string("accy"), vinp, voutp);
+// 	for (int i=1;i<12;i++) {
+// 		acc.Compute();
+// 		in->SetValueInt(i);
+// 		if (i%5 == 0) {
+// 			reset->SetValueBool(true);
+// 		}
+// 		cout << "accy says " << acc.GetOutputs()[0]->GetValueInt() << " now + " << i << " reset " << reset->GetValueBool() << endl;
+// 	}
 
-	Port *aaa = new Port(string("aaa"), INT, 100);
-	Port *bbb = new Port(string("bbb"), INT, 5);
-	Port *ooo = new Port(string("ooo"), INT, 0);
-	vector<Port*> viiip = vector<Port*>();
-	vector<Port*> vooop = vector<Port*>();
-	viiip.push_back(aaa);
-	viiip.push_back(bbb);
-	vooop.push_back(ooo);
-	Difference diffy = Difference(string("diffy"), viiip, vooop);
-	diffy.Compute();
-	cout << "diffy says " << diffy.GetOutputs()[0]->GetValueInt() << " for 100-5" << endl;
-	aaa->SetValueInt(1000);
-	diffy.Compute();
-	cout << "diffy says " << diffy.GetOutputs()[0]->GetValueInt() << " for 1000-5" << endl;
+// 	Port *aaa = new Port(string("aaa"), INT, 100);
+// 	Port *bbb = new Port(string("bbb"), INT, 5);
+// 	Port *ooo = new Port(string("ooo"), INT, 0);
+// 	vector<Port*> viiip = vector<Port*>();
+// 	vector<Port*> vooop = vector<Port*>();
+// 	viiip.push_back(aaa);
+// 	viiip.push_back(bbb);
+// 	vooop.push_back(ooo);
+// 	Difference diffy = Difference(string("diffy"), viiip, vooop);
+// 	diffy.Compute();
+// 	cout << "diffy says " << diffy.GetOutputs()[0]->GetValueInt() << " for 100-5" << endl;
+// 	aaa->SetValueInt(1000);
+// 	diffy.Compute();
+// 	cout << "diffy says " << diffy.GetOutputs()[0]->GetValueInt() << " for 1000-5" << endl;
 	
-	return 0;
-}
+// 	return 0;
+// }
