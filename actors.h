@@ -31,10 +31,10 @@ public:
 	int GetValueInt(){return int(myContents.portValue.valInt);};
 	float GetValueFloat(){return float(myContents.portValue.valFloat);};
 	double GetValueDouble(){return double(myContents.portValue.valDouble);};
-	void SetValueBool(bool b){myContents.portValue.valBool = bool(b);};
-	void SetValueInt(int i){myContents.portValue.valInt = int(i);};
-	void SetValueFloat(float f){myContents.portValue.valFloat = float(f);};
-	void SetValueDouble(double d){myContents.portValue.valDouble = double(d);};
+	void SetValueBool(bool b);
+	void SetValueInt(int i);
+	void SetValueFloat(float f);
+	void SetValueDouble(double d);
 private:
 	string myName;
 	PortContents myContents;

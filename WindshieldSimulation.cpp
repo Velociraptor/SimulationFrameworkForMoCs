@@ -56,8 +56,10 @@ int main() {
 	vopRainGen.push_back(rainfall);
 	// Initialize weather model actor
 	RandomIntInRange *weatherModel = new RandomIntInRange(string("WeatherModel"), vipRainGen, vopRainGen);
-	Task generateRainfall = Task(string("MakeItRain"), weatherModel);
-	Guard rainGuard = Guard(string("RainGuard"), trivialTrueGuard);
+	Task *generateRainfall = new Task(string("MakeItRain"), weatherModel);
+	// Empty port vector for empty guards
+	vector<Port*> trivialPV;
+	Guard *rainGuard = new Guard(string("RainGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainGenFreq = 2000;
 	TaskInvocation *genRainInvoke = new TaskInvocation(generateRainfall, rainGuard, rainGenFreq);
 
@@ -79,8 +81,8 @@ int main() {
 	vopRainSense.push_back(rainfallSensed);
 	// Initialize rain sensor actor
 	AccumulatorWithReset *rainfallSensor = new AccumulatorWithReset(string("RainfallSensor"), vipRainSense, vopRainSense);
-	Task senseRainfall = Task(string("HaveYouEverFeltTheRain"), rainfallSensor);
-	Guard sensorGuard = Guard(string("SensorGuard"), trivialTrueGuard);
+	Task *senseRainfall = new Task(string("HaveYouEverFeltTheRain"), rainfallSensor);
+	Guard *sensorGuard = new Guard(string("SensorGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainSenseFreq = 2000;
 	TaskInvocation *senseRainInvoke = new TaskInvocation(senseRainfall, sensorGuard, rainSenseFreq);
 	
@@ -97,8 +99,8 @@ int main() {
 	vopRainRate.push_back(rainfallRate);
 	// Initialize rain rate actor
 	Difference *rainfallRateCheck = new Difference(string("RainfallRateCheck"),vipRainRate, vopRainRate);
-	Task checkRainfallRate = Task(string("RainingCatsOrDogs"), rainfallRateCheck);
-	Guard rainRateGuard = Guard(string("rainRateGuard"), trivialTrueGuard);
+	Task *checkRainfallRate = new Task(string("RainingCatsOrDogs"), rainfallRateCheck);
+	Guard *rainRateGuard = new Guard(string("rainRateGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainRateCheckFreq = 2000;
 	TaskInvocation *rainRateInvoke = new TaskInvocation(checkRainfallRate, rainRateGuard, rainRateCheckFreq);
 
@@ -125,8 +127,8 @@ int main() {
 	vopWiper.push_back(rainfallReset);
 	// Initialize wiper actor
 	Trigger *wiper = new Trigger(string("wiper"), vipWiper, vopWiper);
-	Task actuateWiper Task(string("WipeItOff"), wiper);
-	Guard wiperGuard = Guard(string("WiperGuard"), trivialTrueGuard);
+	Task *actuateWiper = new Task(string("WipeItOff"), wiper);
+	Guard *wiperGuard = new Guard(string("WiperGuard"), trivialTrueGuard, trivialPV);
 	unsigned int lowWiperFreq = 250;
 	TaskInvocation *lowWiperInvoke = new TaskInvocation(actuateWiper, wiperGuard, lowWiperFreq);
 	lowRainTaskList.push_back(lowWiperInvoke);
@@ -168,8 +170,9 @@ int main() {
 	rainModeSwitches.push_back(wiperSpeedHighToMedSwitch);
 
 	// Initialize director with start mode and mode switches and kick off simulation
-	GiottoDirector giottoD = new GiottoDirector(lowRainMode, rainModeSwitches);
-	giottoD.Run();
+	GiottoDirector giottoD = GiottoDirector(lowRainMode, rainModeSwitches);
+	std::chrono::milliseconds m(10000);
+	giottoD.Run(m);
 
 	// // // Ptides simulation
 	// // PtidesDirector ptidesD = new PtidesDirector();
