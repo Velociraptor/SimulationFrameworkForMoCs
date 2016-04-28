@@ -111,7 +111,7 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 		invokeNextTask();
 		nextMode = checkNextMode();
 		if (nextMode->getName().compare(currentMode->getName()) != 0){
-			updateMode();
+			currentMode = nextMode;
 			// modeTime = new std::chrono::milliseconds(0);
 		}
 		else
@@ -140,18 +140,15 @@ Mode* GiottoDirector::checkNextMode(){
 	return currentMode;
 }
 
-void GiottoDirector::updateMode(){
-	// currentMode = nextMode->getTargetMode();
-}
-
 void GiottoDirector::updateModeTime(){
-
+	
 }
 
 void GiottoDirector::updateActiveTasks(){
-
+	activeTasks.erase (activeTasks.begin());
 }
 
 void GiottoDirector::advanceTime(){
 
 }
+int main(){return 0;}
