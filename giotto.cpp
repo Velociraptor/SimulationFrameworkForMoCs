@@ -13,7 +13,7 @@ using namespace std;
 
 Task::Task(string nameIn,  void (*f)() ) {
 	name = nameIn;
-	task_function = f;
+	task_function = f();
 
 }
 
@@ -23,11 +23,11 @@ Task::TaskFunction() {
 
 Guard::Guard(string nameIn, bool (*f)()) {
 	name = nameIn;
-	GuardFunction = f;
+	GuardFunction = f();
 }
 
 bool Guard::Check() {
-	return GuardFunction();
+	return GuardFunction;
 }
 
 Mode::Mode(string nameIn, vector<TaskInvocation*> t, vector<ModeSwitch*> ms) {
@@ -52,7 +52,7 @@ Mode::Mode(string nameIn, vector<TaskInvocation*> t, vector<ModeSwitch*> ms) {
 Task Mode::findTask(string taskName){
 	for (int i = 0; i < invokes.size(); ++i)
 	{
-		if(invokes[i]->getTask().getName() == taskName)
+		if(invokes[i]->getTask().getName().compare(taskName)==0)
 			return (invokes[i]->getTask());
 	}
 	printf("No task of that name!\n");
@@ -81,7 +81,7 @@ void TaskInvocation::SetFrequency (unsigned int f) {
 // 	frequency = f;
 // }
 
-ModeSwitch::ModeSwitch(Guard g, Mode m, unsigned int f) {
+ModeSwitch::ModeSwitch(Guard g, Mode* m, unsigned int f) {
 	myGuard = g;
 	targetMode = m;
 	frequency = f;
@@ -91,7 +91,7 @@ void ModeSwitch::SetFrequency (unsigned int f) {
 	frequency = f;
 }
 
-void ModeSwitch::SetTargetMode (Mode m) {
+void ModeSwitch::SetTargetMode (Mode* m) {
 	targetMode = m;
 }
 

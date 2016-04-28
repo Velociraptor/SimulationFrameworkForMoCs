@@ -47,12 +47,12 @@ class Mode;
 
 class ModeSwitch{
 public:
-	ModeSwitch(Guard, Mode, unsigned int);
+	ModeSwitch(Guard, Mode*, unsigned int);
 	void SetFrequency (unsigned int);
-	void SetTargetMode (Mode);
+	void SetTargetMode (Mode*);
 private:
 	unsigned int frequency;
-	Mode targetMode;
+	Mode* targetMode;
 	Guard myGuard;
 };
 
