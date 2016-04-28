@@ -137,37 +137,38 @@ int main() {
 	TaskInvocation *highWiperInvoke = new TaskInvocation(actuateWiper, wiperGuard, highWiperFreq);
 	highRainTaskList.push_back(highWiperInvoke);
 
-	// Mode switches to each possible destination mode, 
+	// Mode setup
+	Mode *lowRainMode = new Mode(string("lowRainMode"), lowRainTaskList);
+	Mode *medRainMode = new Mode(string("medRainMode"), medRainTaskList);
+	Mode *highRainMode = new Mode(string("highRainMode"), highRainTaskList);
+
+	// Mode switches to each possible destination mode from each possible start,
 	// with appropriate Guards calling functions above with correct port for rain rate
-	// and a frequency as often as we want to be able to switch modes (?)
+	// and a frequency as often as we want to be able to switch modes
 	unsigned int modeSwitchCheckFreq = 100;
 	vector<Port*> pvGuard;
 	pvGuard.push_back(rainfallRate);
-	Guard lowRainGuard = new Guard(string("lowRainGuard"), rainRateLow, pvGuard);
-	ModeSwitch *wiperSpeedLowSwitch = new ModeSwitch(lowRainGuard, lowRainMode, modeSwitchCheckFreq);
-	Guard medRainGuard = new Guard(string("medRainGuard"), rainRateMed, pvGuard);
-	ModeSwitch *wiperSpeedMedSwitch = new ModeSwitch(medRainGuard, medRainMode, modeSwitchCheckFreq);
-	Guard highRainGuard = new Guard(string("highRainGuard"), rainRateHigh, pvGuard);
-	ModeSwitch *wiperSpeedHighSwitch = new ModeSwitch(highRainGuard, highRainMode, modeSwitchCheckFreq);
+	Guard *lowRainGuard = new Guard(string("lowRainGuard"), rainRateLow, pvGuard);
+	Guard *medRainGuard = new Guard(string("medRainGuard"), rainRateMed, pvGuard);
+	Guard *highRainGuard = new Guard(string("highRainGuard"), rainRateHigh, pvGuard);
+	ModeSwitch *wiperSpeedLowToMedSwitch = new ModeSwitch(medRainGuard, lowRainMode, medRainMode, modeSwitchCheckFreq);
+	ModeSwitch *wiperSpeedLowToHighSwitch = new ModeSwitch(highRainGuard, lowRainMode, highRainMode, modeSwitchCheckFreq);
+	ModeSwitch *wiperSpeedMedToLowSwitch = new ModeSwitch(lowRainGuard, medRainMode, lowRainMode, modeSwitchCheckFreq);
+	ModeSwitch *wiperSpeedMedToHighSwitch = new ModeSwitch(highRainGuard, medRainMode, highRainMode, modeSwitchCheckFreq);
+	ModeSwitch *wiperSpeedHighToLowSwitch = new ModeSwitch(lowRainGuard, highRainMode, lowRainMode, modeSwitchCheckFreq);
+	ModeSwitch *wiperSpeedHighToMedSwitch = new ModeSwitch(medRainGuard, highRainMode, medRainMode, modeSwitchCheckFreq);
 
-	// Set mode switches for each mode to other two wiper speeds
-	vector<ModeSwitch*> lowRainModeSwitches;
-	lowRainModeSwitches.push_back(wiperSpeedMedSwitch);
-	lowRainModeSwitches.push_back(wiperSpeedHighSwitch);
-	vector<ModeSwitch*> medRainModeSwitches;
-	medRainModeSwitches.push_back(wiperSpeedLowSwitch);
-	medRainModeSwitches.push_back(wiperSpeedHighSwitch);
-	vector<ModeSwitch*> highRainModeSwitches;
-	highRainModeSwitches.push_back(wiperSpeedLowSwitch);
-	highRainModeSwitches.push_back(wiperSpeedMedSwitch);
+	// Set up vector of mode switches for director
+	vector<ModeSwitch*> rainModeSwitches;
+	rainModeSwitches.push_back(wiperSpeedLowToMedSwitch);
+	rainModeSwitches.push_back(wiperSpeedLowToHighSwitch);
+	rainModeSwitches.push_back(wiperSpeedMedToLowSwitch);
+	rainModeSwitches.push_back(wiperSpeedMedToHighSwitch);
+	rainModeSwitches.push_back(wiperSpeedHighToLowSwitch);
+	rainModeSwitches.push_back(wiperSpeedHighToMedSwitch);
 
-	// Mode setup
-	Mode lowRainMode = new Mode(string("lowRainMode"), lowRainTaskList, lowRainModeSwitches);
-	Mode medRainMode = new Mode(string("medRainMode"), medRainTaskList, medRainModeSwitches);
-	Mode highRainMode = new Mode(string("highRainMode"), highRainTaskList, highRainModeSwitches);
-
-	// Initialize director with start mode and kick off simulation
-	GiottoDirector giottoD = new GiottoDirector(lowRainMode);
+	// Initialize director with start mode and mode switches and kick off simulation
+	GiottoDirector giottoD = new GiottoDirector(lowRainMode, rainModeSwitches);
 	giottoD.Run();
 
 	// // // Ptides simulation

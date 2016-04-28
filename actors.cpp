@@ -29,44 +29,39 @@ string ComparatorGreater::ActorType () {
 // based on current input port values
 void ComparatorGreater::Compute () {
 	bool output = false;
-	int input1 = myInputs[0]->GetValueInt();
-	int input2 = myInputs[1]->GetValueInt();
-	if (input1 > input2) {
-		output = true;
+	PortType pt = myInputs[0]->Type();
+	switch (pt) {
+		case INT:
+			{
+				int input1i = myInputs[0]->GetValueInt();
+				int input2i = myInputs[1]->GetValueInt();
+				if (input1i > input2i) {
+					output = true;
+				}
+				break;
+			}
+		case FLOAT:
+			{
+				float input1f = myInputs[0]->GetValueFloat();
+				float input2f = myInputs[1]->GetValueFloat();
+				if (input1f > input2f) {
+					output = true;
+				}
+				break;
+			}
+		case DOUBLE:
+			{
+				double input1d = myInputs[0]->GetValueDouble();
+				double input2d = myInputs[1]->GetValueDouble();
+				if (input1d > input2d) {
+					output = true;
+				}
+				break;
+			}
+		default:
+			output = false;
+			break;
 	}
-	// PortType pt = myInputs[0]->Type();
-	// switch (pt) {
-	// 	case INT:
-	// 		{
-	// 			int input1 = myInputs[0]->GetValueInt();
-	// 			int input2 = myInputs[1]->GetValueInt();
-	// 			if (input1 > input2) {
-	// 				output = true;
-	// 			}
-	// 			break;
-	// 		}
-	// 	case FLOAT:
-	// 		{
-	// 			float input1 = myInputs[0]->GetValueFloat();
-	// 			float input2 = myInputs[1]->GetValueFloat();
-	// 			if (input1 > input2) {
-	// 				output = true;
-	// 			}
-	// 			break;
-	// 		}
-	// 	case DOUBLE:
-	// 		{
-	// 			double input1 = myInputs[0]->GetValueDouble();
-	// 			double input2 = myInputs[1]->GetValueDouble();
-	// 			if (input1 > input2) {
-	// 				output = true;
-	// 			}
-	// 			break;
-	// 		}
-	// 	default:
-	// 		output = false;
-	// 		break;
-	// }
 	
 	myOutputs[0]->SetValueBool(output);
 }
@@ -135,11 +130,11 @@ void Trigger::Compute () {
 	myOutputs[0]->SetValueBool(true);
 }
 
-// Unit Testing
+// // Unit Testing
 // int main() {
 // 	PortValue pva;
 // 	pva.valInt = 1;
-// 	PortContents pca = {INT, pva}
+// 	PortContents pca = {INT, pva};
 // 	PortValue pvo;
 // 	pvo.valBool = false;
 // 	PortContents pco = {BOOL, pvo};
@@ -207,5 +202,5 @@ void Trigger::Compute () {
 // 	diffy.Compute();
 // 	cout << "diffy says " << diffy.GetOutputs()[0]->GetValueInt() << " for 1000-5" << endl;
 	
-	return 0;
-}
+// 	return 0;
+// }
