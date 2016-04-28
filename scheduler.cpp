@@ -9,9 +9,9 @@
 using namespace std;
 
 // bool sortByPeriod (const SchedulerTask &lhs, const SchedulerTask &rhs) { return &lhs < &rhs; }
-bool sortByPeriod (SchedulerTask lhs, SchedulerTask rhs) { return lhs < rhs; }
 
-vector<SchedulerTask> getSchedule(vector<SchedulerTask> unorderedTasks){
+
+vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks){
 	sort(unorderedTasks.begin(), unorderedTasks.end(), sortByPeriod);
 	return unorderedTasks;
 }
