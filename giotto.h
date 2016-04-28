@@ -20,6 +20,9 @@ private:
 	Actor* myActor;
 };
 
+// Define trivially true guard
+bool trivialTrueGuard () { return true; }
+
 class Guard{
 public:
 	Guard(string, bool (*f)(vector<Port*>), vector<Port*> );
