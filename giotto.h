@@ -19,6 +19,9 @@ private:
 	void *task_function;
 };
 
+// Define trivially true guard
+bool trivialTrueGuard () { return true; }
+
 class Guard{
 public:
 	Guard(string, bool (*f)());

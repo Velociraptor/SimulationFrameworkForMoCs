@@ -10,11 +10,6 @@ int main() {
 	// Giotto simulation
 	cout << "Starting Simulation Using Giotto" << endl;
 
-	// Define trivially true guard
-	bool trivialTrueGuard () {
-		return true;
-	}
-
 	// Weather Model simulates rainfall as a random int per [unit time]
 	// input port: range of rain creation
 	PortValue pvRainGenRange;
@@ -31,11 +26,11 @@ int main() {
 	vector<Port*> vopRainGen;
 	vopRainGen.push_back(rainfall);
 	// Initialize weather model actor
-	RandomIntInRange weatherModel = new RandomIntInRange("WeatherModel", vipRainGen, vopRainGen);
-	Task generateRainfall = new Task("MakeItRain", weatherModel.Compute());
-	Guard rainGuard = new Guard("RainGuard", trivialTrueGuard);
+	RandomIntInRange weatherModel = RandomIntInRange(string("WeatherModel"), vipRainGen, vopRainGen);
+	Task generateRainfall = Task(string("MakeItRain"), weatherModel.Compute);
+	Guard rainGuard = Guard(string("RainGuard"), trivialTrueGuard);
 	unsigned int rainGenFreq = 2000;
-	TaskInvocation genRainInvoke = new TaskInvocation(generateRainfall, rainGuard, rainGenFreq);
+	TaskInvocation *genRainInvoke = new TaskInvocation(generateRainfall, rainGuard, rainGenFreq);
 
 	// // Rainfall Sensor accumulates rain over time to dictate rate of fall for controls
 	// AccumulatorWithReset rainfallSensor = new AccumulatorWithReset("RainfallSensor");
