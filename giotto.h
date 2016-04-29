@@ -39,6 +39,7 @@ public:
 	void SetFrequency (unsigned int);
 	SchedulerTask* getSchedulerTask(){return mySchedTask;};
 	Task* getTask(){return myTask;}
+	std::chrono::milliseconds getPeriod();
 private:
 	unsigned int frequency;
 	Task *myTask;
@@ -52,13 +53,11 @@ class Mode;
 
 class ModeSwitch{
 public:
-	ModeSwitch(Guard*, Mode* ,Mode*, unsigned int);
-	void SetFrequency (unsigned int);
+	ModeSwitch(Guard*, Mode* ,Mode*);
 	Mode* getSource(){return srcMode;};
 	Mode* getDest(){return destMode;};
 	Guard* getGuard(){return myGuard;};
 private:
-	unsigned int frequency;
 	Mode* srcMode;
 	Mode* destMode;
 	Guard* myGuard;
@@ -82,7 +81,6 @@ public:
 	vector<TaskInvocation*> getInvokes(){return invokes;};
 private:
 	string name;
-	std::chrono::milliseconds period;
 	vector<TaskInvocation*> invokes;
 	vector<SchedulerTask*> schedTasks;
 	// vector<ActuatorUpdate*> updates;
@@ -100,21 +98,26 @@ private:
 
 class GiottoDirector{
 public:
-	GiottoDirector(Mode*, vector<ModeSwitch*>);
+	GiottoDirector(Mode*, vector<ModeSwitch*>, unsigned int);
 	void Run(std::chrono::milliseconds);
 	vector<SchedulerTask*> GetEnabledTaskList() {return enabledTasks;};
 	vector<SchedulerTask*> GetActiveTaskList() {return activeTasks;};
 	vector<ModeSwitch*> GetModeSwitches(){return allTheSwitches;};
+	std::chrono::milliseconds getModeSwitchPeriod();
 
 private:
 
 	Mode* startMode;
 	Mode* currentMode;
+	unsigned int ModeSwitchFrequency;
 	vector<SchedulerTask*> enabledTasks;
 	vector<SchedulerTask*> activeTasks;
 	vector<ModeSwitch*> allTheSwitches;
+	std::chrono::system_clock::time_point startRun;
+	std::chrono::system_clock::time_point lastModeSwitch;
 	std::chrono::milliseconds modeTime;
 	std::chrono::milliseconds currentTime;
+	std::chrono::milliseconds modeSwitchPeriod;
 	void invokeNextTask();
 	Mode* checkNextMode();
 	void updateModeTime();
