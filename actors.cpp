@@ -43,6 +43,19 @@ Actor::Actor (string name, vector<Port*> inputPorts,
 
 // Derived Actor class definitions
 
+// Constructor: call base class constructor and warn on unexpected port vector sizes
+// expected input ports: 2 - numeric
+// expected output ports: 1 - bool
+ComparatorGreater::ComparatorGreater(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
+	if (inputPorts.size() != 2) {
+		cout << "Warning: ComparatorGreater Actor received unexpected number of input ports." << endl;
+	}
+	if (outputPorts.size() != 1) {
+		cout << "Warning: ComparatorGreater Actor received unexpected number of output ports." << endl;
+	}
+}
+
 // Return actor type
 string ComparatorGreater::ActorType () {
 	return "ComparatorGreater";
@@ -90,6 +103,19 @@ void ComparatorGreater::Compute () {
 	myOutputs[0]->SetValueBool(output);
 }
 
+// Constructor: call base class constructor and warn on unexpected port vector sizes
+// expected input ports: 1 - numeric (top of range, from zero)
+// expected output ports: 1 - int
+RandomIntInRange::RandomIntInRange(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
+	if (inputPorts.size() != 1) {
+		cout << "Warning: RandomIntInRange Actor received unexpected number of input ports." << endl;
+	}
+	if (outputPorts.size() != 1) {
+		cout << "Warning: RandomIntInRange Actor received unexpected number of output ports." << endl;
+	}
+}
+
 // Return actor type
 string RandomIntInRange::ActorType () {
 	return "RandomIntInRange";
@@ -103,6 +129,19 @@ void RandomIntInRange::Compute () {
 	int rangeTop = myInputs[0]->GetValueInt();
 	int output = rangeBottom + (rand() % (int)(rangeTop - rangeBottom + 1));
 	myOutputs[0]->SetValueInt(output);
+}
+
+// Constructor: call base class constructor and warn on unexpected port vector sizes
+// expected input ports: 2 - numeric and bool (for reset flag)
+// expected output ports: 1 - numeric (current accumulation)
+AccumulatorWithReset::AccumulatorWithReset(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
+	if (inputPorts.size() != 2) {
+		cout << "Warning: AccumulatorWithReset Actor received unexpected number of input ports." << endl;
+	}
+	if (outputPorts.size() != 1) {
+		cout << "Warning: AccumulatorWithReset Actor received unexpected number of output ports." << endl;
+	}
 }
 
 // Return actor type
@@ -136,6 +175,19 @@ void AccumulatorWithReset::Compute () {
 // 	myInputs[1]->SetValueBool(true);
 // }
 
+// Constructor: call base class constructor and warn on unexpected port vector sizes
+// expected input ports: 2 - numeric
+// expected output ports: 1 - numeric
+Difference::Difference(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
+	if (inputPorts.size() != 2) {
+		cout << "Warning: Difference Actor received unexpected number of input ports." << endl;
+	}
+	if (outputPorts.size() != 1) {
+		cout << "Warning: Difference Actor received unexpected number of output ports." << endl;
+	}
+}
+
 // Return actor type
 string Difference::ActorType () {
 	return "Difference";
@@ -147,6 +199,19 @@ void Difference::Compute () {
 	cout << "Actor " << Name() << " computing" << endl;
 	int diff = myInputs[0]->GetValueInt() - myInputs[1]->GetValueInt();
 	myOutputs[0]->SetValueInt(diff);
+}
+
+// Constructor: call base class constructor and warn on unexpected port vector sizes
+// expected input ports: none
+// expected output ports: 1 - bool (true when triggered)
+Trigger::Trigger(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
+	if (inputPorts.size() != 0) {
+		cout << "Warning: Trigger Actor received unexpected number of input ports." << endl;
+	}
+	if (outputPorts.size() != 1) {
+		cout << "Warning: Trigger Actor received unexpected number of output ports." << endl;
+	}
 }
 
 // Return actor type
@@ -161,8 +226,16 @@ void Trigger::Compute () {
 }
 
 // Parent constructor plus initially set internalStorage to zero
+// expected input ports: 1 - numeric
+// expected output ports: 1 - numeric (gives previous stored value)
 Register::Register (string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) :  Actor(s, inputPorts, outputPorts) {
+	if (inputPorts.size() != 1) {
+		cout << "Warning: Register Actor received unexpected number of input ports." << endl;
+	}
+	if (outputPorts.size() != 1) {
+		cout << "Warning: Register Actor received unexpected number of output ports." << endl;
+	}
 	internalStorage = 0;
 }
 

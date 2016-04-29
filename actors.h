@@ -57,64 +57,47 @@ private:
 };
 
 // strict greater than comparator
-// expected input ports: 2 - numeric
-// expected output ports: 1 - bool
 class ComparatorGreater : public Actor {
 public:
-	ComparatorGreater(string s, vector<Port*> inputPorts, 
-		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	ComparatorGreater(string, vector<Port*>, vector<Port*>);
 	string ActorType();
 	void Compute();
 };
 
 // generate random int within given range
-// expected input ports: 1 - numeric (top of range, from zero)
-// expected output ports: 1 - int
 class RandomIntInRange : public Actor {
 public:
-	RandomIntInRange(string s, vector<Port*> inputPorts, 
-		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	RandomIntInRange(string, vector<Port*>, vector<Port*>);
 	string ActorType();
 	void Compute();
 };
 
 // accumulator with reset
-// expected input ports: 2 - numeric and bool (for reset flag)
-// expected output ports: 1 - numeric (current accumulation)
 class AccumulatorWithReset : public Actor {
 public:
-	AccumulatorWithReset(string s, vector<Port*> inputPorts, 
-		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	AccumulatorWithReset(string, vector<Port*>, vector<Port*>);
 	string ActorType();
 	void Compute();
 	// void Reset();
 };
 
 // difference
-// expected input ports: 2 - numeric
-// expected output ports: 1 - numeric
 class Difference : public Actor {
 public:
-	Difference(string s, vector<Port*> inputPorts, 
-		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	Difference(string, vector<Port*>, vector<Port*>);
 	string ActorType();
 	void Compute();
 };
 
 // trigger
-// expected input ports: none
-// expected output ports: 1 - bool (true when triggered)
 class Trigger : public Actor {
 public:
-	Trigger(string s, vector<Port*> inputPorts, 
-		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {};
+	Trigger(string, vector<Port*>, vector<Port*>);
 	string ActorType();
 	void Compute();
 };
 
 // register
-// expected input ports: 1 - numeric
-// expected output ports: 1 - numeric (gives previous stored value)
 class Register : public Actor {
 public:
 	Register(string, vector<Port*>, vector<Port*>);
