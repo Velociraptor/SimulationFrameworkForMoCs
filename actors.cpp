@@ -251,6 +251,36 @@ void Register::Compute () {
 	internalStorage = myInputs[0]->GetValueInt();
 }
 
+// Constructor: call base class constructor and warn on unexpected port vector sizes
+// expected input ports: 2 - numeric (top of range, increment)
+// expected output ports: 1 - numeric
+RepeatingRamp::RepeatingRamp(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
+	if (inputPorts.size() != 2) {
+		cout << "Warning: RepeatingRamp Actor received unexpected number of input ports." << endl;
+	}
+	if (outputPorts.size() != 1) {
+		cout << "Warning: RepeatingRamp Actor received unexpected number of output ports." << endl;
+	}
+}
+
+// Return actor type
+string RepeatingRamp::ActorType () {
+	return "RepeatingRamp";
+}
+
+// Set output port value to true
+void RepeatingRamp::Compute () {
+	cout << "Actor " << Name() << " computing" << endl;
+	int increment = myInputs[1]->GetValueInt();
+	int maximal = myInputs[0]->GetValueInt();
+	int newOutput = myOutputs[0]->GetValueInt() + increment;
+	if (newOutput > maximal) {
+		newOutput = 0;
+	}
+	myOutputs[0]->SetValueInt(newOutput);
+}
+
 // // Unit Testing
 // int main() {
 // 	PortValue pva;

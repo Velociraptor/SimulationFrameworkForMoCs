@@ -39,16 +39,39 @@ int main() {
 	// Giotto simulation
 	cout << "Starting Simulation Using Giotto" << endl;
 
-	// Weather Model simulates rainfall as a random int per [unit time]
-	// input port: range of rain creation
-	srand((unsigned)time(NULL));
+	// // Weather Model simulates rainfall as a random int per [unit time]
+	// // input port: range of rain creation
+	// srand((unsigned)time(NULL));
+	// PortValue pvRainGenRange;
+	// pvRainGenRange.valInt = 100;
+	// PortContents pcRainGenRange = {INT, pvRainGenRange};
+	// Port *rainGenRange = new Port(string("rainGenerationRange"), pcRainGenRange);
+	// vector<Port*> vipRainGen;
+	// vipRainGen.push_back(rainGenRange);
+	// // output port: randomly generated int (in range)
+	// PortValue pvRainInit;
+	// pvRainInit.valInt = 0;
+	// PortContents pcRainfall = {INT, pvRainInit};
+	// Port *rainfall = new Port(string("rainfall"), pcRainfall);
+	// vector<Port*> vopRainGen;
+	// vopRainGen.push_back(rainfall);
+	// // Initialize weather model actor
+	// RandomIntInRange *weatherModel = new RandomIntInRange(string("WeatherModel"), vipRainGen, vopRainGen);
+
+	// Alternate Weather Model simulates rainfall as a repeating ramp from 0 to 100
+	// input ports: range of rain creation, increment	PortValue pvRainGenRange;
 	PortValue pvRainGenRange;
 	pvRainGenRange.valInt = 100;
 	PortContents pcRainGenRange = {INT, pvRainGenRange};
 	Port *rainGenRange = new Port(string("rainGenerationRange"), pcRainGenRange);
+	PortValue pvRainGenIncr;
+	pvRainGenIncr.valInt = 1;
+	PortContents pcRainGenIncr = {INT, pvRainGenIncr};
+	Port *rainGenIncr = new Port(string("rainGenerationIncrement"), pcRainGenIncr);
 	vector<Port*> vipRainGen;
 	vipRainGen.push_back(rainGenRange);
-	// output port: randomly generated int (in range)
+	vipRainGen.push_back(rainGenIncr);
+	// output port: generated rainfall int (ramp in range)
 	PortValue pvRainInit;
 	pvRainInit.valInt = 0;
 	PortContents pcRainfall = {INT, pvRainInit};
@@ -56,7 +79,9 @@ int main() {
 	vector<Port*> vopRainGen;
 	vopRainGen.push_back(rainfall);
 	// Initialize weather model actor
-	RandomIntInRange *weatherModel = new RandomIntInRange(string("WeatherModel"), vipRainGen, vopRainGen);
+	RepeatingRamp *weatherModel = new RepeatingRamp(string("WeatherModel"), vipRainGen, vopRainGen);
+
+	// Task invocation for rain generation based on weather model
 	Task *generateRainfall = new Task(string("MakeItRain"), weatherModel);
 	// Empty port vector for empty guards
 	vector<Port*> trivialPV;

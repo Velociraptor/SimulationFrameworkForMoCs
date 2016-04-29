@@ -107,4 +107,12 @@ private:
 	int internalStorage;
 };
 
+// repeating ramp
+class RepeatingRamp : public Actor {
+public:
+	RepeatingRamp(string, vector<Port*>, vector<Port*>);
+	string ActorType();
+	void Compute();
+};
+
 #endif
