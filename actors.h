@@ -112,4 +112,16 @@ public:
 	void Compute();
 };
 
+// register
+// expected input ports: 1 - numeric
+// expected output ports: 1 - numeric (gives previous stored value)
+class Register : public Actor {
+public:
+	Register(string, vector<Port*>, vector<Port*>);
+	string ActorType();
+	void Compute();
+private:
+	int internalStorage;
+};
+
 #endif

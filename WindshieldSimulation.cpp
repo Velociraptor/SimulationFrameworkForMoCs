@@ -82,15 +82,34 @@ int main() {
 	vopRainSense.push_back(rainfallSensed);
 	// Initialize rain sensor actor
 	AccumulatorWithReset *rainfallSensor = new AccumulatorWithReset(string("RainfallSensor"), vipRainSense, vopRainSense);
-	Task *senseRainfall = new Task(string("HaveYouEverFeltTheRain"), rainfallSensor);
+	Task *senseRainfall = new Task(string("SenseTheRain"), rainfallSensor);
 	Guard *sensorGuard = new Guard(string("SensorGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainSenseFreq = 2000;
 	TaskInvocation *senseRainInvoke = new TaskInvocation(senseRainfall, sensorGuard, rainSenseFreq);
+
+	// Rainfall Register stores last rainfall sensor accumulator output for rate check
+	// input port: sensed rain accumulation from rainfall sensor
+	vector<Port*> vipRainRegister;
+	vipRainRegister.push_back(rainfallSensed);
+	// output port: previous rainfall datapoint stored
+	PortValue pvRainRegInit;
+	pvRainRegInit.valInt = 0;
+	PortContents pcRainRegister = {INT, pvRainRegInit};
+	Port *rainfallPrevStored = new Port(string("rainfallPrevStored"), pcRainRegister);
+	vector<Port*> vopRainRegister;
+	vopRainRegister.push_back(rainfallPrevStored);
+	// Initialize rain register actor
+	Register *prevRainRegister = new Register(string("PreviousRainRegister"), vipRainRegister, vopRainRegister);
+	Task *storeLatestRainfall = new Task(string("StoreLatestRain"), prevRainRegister);
+	Guard *rainRegGuard = new Guard(string("rainStoreGuard"), trivialTrueGuard, trivialPV);
+	unsigned int rainStoreFreq = 2000;
+	TaskInvocation *storeRainInvoke = new TaskInvocation(storeLatestRainfall, rainRegGuard, rainStoreFreq);
 	
 	// Rainfall Rate tracks rainfall over time to send to mode control
-	// input port: sensed rain accumulation from rainfall sensor
+	// input ports: sensed rain accumulation from rainfall sensor, and previous value from register
 	vector<Port*> vipRainRate;
 	vipRainRate.push_back(rainfallSensed);
+	vipRainRate.push_back(rainfallPrevStored);
 	// output port: determined rain rate over latest time unit
 	PortValue pvRainRateInit;
 	pvRainRateInit.valInt = 0;
@@ -100,7 +119,7 @@ int main() {
 	vopRainRate.push_back(rainfallRate);
 	// Initialize rain rate actor
 	Difference *rainfallRateCheck = new Difference(string("RainfallRateCheck"),vipRainRate, vopRainRate);
-	Task *checkRainfallRate = new Task(string("RainingCatsOrDogs"), rainfallRateCheck);
+	Task *checkRainfallRate = new Task(string("CheckRainRate"), rainfallRateCheck);
 	Guard *rainRateGuard = new Guard(string("rainRateGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainRateCheckFreq = 2000;
 	TaskInvocation *rainRateInvoke = new TaskInvocation(checkRainfallRate, rainRateGuard, rainRateCheckFreq);
@@ -111,12 +130,15 @@ int main() {
 	vector<TaskInvocation*> highRainTaskList;
 	lowRainTaskList.push_back(genRainInvoke);
 	lowRainTaskList.push_back(senseRainInvoke);
+	lowRainTaskList.push_back(storeRainInvoke);
 	lowRainTaskList.push_back(rainRateInvoke);
 	medRainTaskList.push_back(genRainInvoke);
 	medRainTaskList.push_back(senseRainInvoke);
+	medRainTaskList.push_back(storeRainInvoke);
 	medRainTaskList.push_back(rainRateInvoke);
 	highRainTaskList.push_back(genRainInvoke);
 	highRainTaskList.push_back(senseRainInvoke);
+	highRainTaskList.push_back(storeRainInvoke);
 	highRainTaskList.push_back(rainRateInvoke);
 
 	// Wiper actuation based on operating mode

@@ -104,7 +104,8 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 	enabledTasks = currentMode->getScheduledTasks();
 	activeTasks = enabledTasks;
 
-	while(currentTime < maxRunTime){
+	// while(currentTime < maxRunTime){
+	while (1) {
 		invokeNextTask();
 		nextMode = checkNextMode();
 		if (nextMode->getName().compare(currentMode->getName()) != 0){
@@ -120,6 +121,7 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 
 void GiottoDirector::invokeNextTask(){
 	string curr_task_name = activeTasks[0]->getID();
+	cout << "Invoking task " << curr_task_name << endl;
 	Task* curr_task = currentMode->findTask(curr_task_name);
 	curr_task->getActor()->Compute();
 }
@@ -143,6 +145,7 @@ void GiottoDirector::updateModeTime(){
 
 void GiottoDirector::updateActiveTasks(){
 	activeTasks.erase (activeTasks.begin());
+	cout << "current number of active tasks: " << activeTasks.size() << endl;
 }
 
 void GiottoDirector::advanceTime(){

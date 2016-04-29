@@ -118,6 +118,7 @@ void AccumulatorWithReset::Compute () {
 	// (and set reset port back to false) 
 	bool reset = myInputs[1]->GetValueBool();
 	if (reset) {
+		cout << "Accumulator Actor " << Name() << " resetting" << endl;
 		myOutputs[0]->SetValueInt(0);
 		myInputs[1]->SetValueBool(false);
 	} else {
@@ -125,6 +126,7 @@ void AccumulatorWithReset::Compute () {
 		int inputAdd = myInputs[0]->GetValueInt();
 		int prevOut = myOutputs[0]->GetValueInt();
 		myOutputs[0]->SetValueInt(prevOut + inputAdd);
+		cout << "Accumulator Actor " << Name() << " clearing input" << endl;
 		myInputs[0]->SetValueInt(0);
 	}
 }
@@ -156,6 +158,24 @@ string Trigger::ActorType () {
 void Trigger::Compute () {
 	cout << "Actor " << Name() << " computing" << endl;
 	myOutputs[0]->SetValueBool(true);
+}
+
+// Parent constructor plus initially set internalStorage to zero
+Register::Register (string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) :  Actor(s, inputPorts, outputPorts) {
+	internalStorage = 0;
+}
+
+// Return actor type
+string Register::ActorType () {
+	return "Register";
+}
+
+// Shift internal storage to output, and input to internal storage
+void Register::Compute () {
+	cout << "Actor " << Name() << " computing" << endl;
+	myOutputs[0]->SetValueInt(internalStorage);
+	internalStorage = myInputs[0]->GetValueInt();
 }
 
 // // Unit Testing
