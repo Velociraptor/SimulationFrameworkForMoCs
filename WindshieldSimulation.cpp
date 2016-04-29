@@ -169,19 +169,18 @@ int main() {
 
 	// Mode switches to each possible destination mode from each possible start,
 	// with appropriate Guards calling functions above with correct port for rain rate
-	// and a frequency as often as we want to be able to switch modes
-	unsigned int modeSwitchCheckFreq = 100;
+	// and a frequency as often as we want to be able to switch modes (set in director)
 	vector<Port*> pvGuard;
 	pvGuard.push_back(rainfallRate);
 	Guard *lowRainGuard = new Guard(string("lowRainGuard"), rainRateLow, pvGuard);
 	Guard *medRainGuard = new Guard(string("medRainGuard"), rainRateMed, pvGuard);
 	Guard *highRainGuard = new Guard(string("highRainGuard"), rainRateHigh, pvGuard);
-	ModeSwitch *wiperSpeedLowToMedSwitch = new ModeSwitch(medRainGuard, lowRainMode, medRainMode, modeSwitchCheckFreq);
-	ModeSwitch *wiperSpeedLowToHighSwitch = new ModeSwitch(highRainGuard, lowRainMode, highRainMode, modeSwitchCheckFreq);
-	ModeSwitch *wiperSpeedMedToLowSwitch = new ModeSwitch(lowRainGuard, medRainMode, lowRainMode, modeSwitchCheckFreq);
-	ModeSwitch *wiperSpeedMedToHighSwitch = new ModeSwitch(highRainGuard, medRainMode, highRainMode, modeSwitchCheckFreq);
-	ModeSwitch *wiperSpeedHighToLowSwitch = new ModeSwitch(lowRainGuard, highRainMode, lowRainMode, modeSwitchCheckFreq);
-	ModeSwitch *wiperSpeedHighToMedSwitch = new ModeSwitch(medRainGuard, highRainMode, medRainMode, modeSwitchCheckFreq);
+	ModeSwitch *wiperSpeedLowToMedSwitch = new ModeSwitch(medRainGuard, lowRainMode, medRainMode);
+	ModeSwitch *wiperSpeedLowToHighSwitch = new ModeSwitch(highRainGuard, lowRainMode, highRainMode);
+	ModeSwitch *wiperSpeedMedToLowSwitch = new ModeSwitch(lowRainGuard, medRainMode, lowRainMode);
+	ModeSwitch *wiperSpeedMedToHighSwitch = new ModeSwitch(highRainGuard, medRainMode, highRainMode);
+	ModeSwitch *wiperSpeedHighToLowSwitch = new ModeSwitch(lowRainGuard, highRainMode, lowRainMode);
+	ModeSwitch *wiperSpeedHighToMedSwitch = new ModeSwitch(medRainGuard, highRainMode, medRainMode);
 
 	// Set up vector of mode switches for director
 	vector<ModeSwitch*> rainModeSwitches;
@@ -193,7 +192,8 @@ int main() {
 	rainModeSwitches.push_back(wiperSpeedHighToMedSwitch);
 
 	// Initialize director with start mode and mode switches and kick off simulation
-	GiottoDirector giottoD = GiottoDirector(lowRainMode, rainModeSwitches);
+	unsigned int modeSwitchCheckFreq = 100;
+	GiottoDirector giottoD = GiottoDirector(lowRainMode, rainModeSwitches, modeSwitchCheckFreq);
 	std::chrono::milliseconds m(10000);
 	giottoD.Run(m);
 
