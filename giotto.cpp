@@ -64,6 +64,11 @@ void TaskInvocation::SetFrequency (unsigned int f) {
 	frequency = f;
 }
 
+std::chrono::milliseconds TaskInvocation::getPeriod(){
+	int period = (int)1000/frequency;
+	std::chrono::milliseconds m(period);
+	return m;
+}
 // ActuatorUpdate::ActuatorUpdate(Guard g, unsigned int f) {
 // 	myGuard = g;
 // 	frequency = f;
@@ -73,15 +78,10 @@ void TaskInvocation::SetFrequency (unsigned int f) {
 // 	frequency = f;
 // }
 
-ModeSwitch::ModeSwitch(Guard* g, Mode* from, Mode* to, unsigned int f) {
+ModeSwitch::ModeSwitch(Guard* g, Mode* from, Mode* to) {
 	myGuard = g;
 	destMode = to;
 	srcMode = from;
-	frequency = f;
-}
-
-void ModeSwitch::SetFrequency (unsigned int f) {
-	frequency = f;
 }
 
 
@@ -92,25 +92,38 @@ void ModeSwitch::SetFrequency (unsigned int f) {
 // 	ModeTime = new std::chrono::milliseconds(0);
 // }
 
-GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches) {
+GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned int f) {
 	startMode = m;
 	allTheSwitches = switches;
 	currentMode = m;
+	ModeSwitchFrequency = f;
+	int period = (int)1000/ModeSwitchFrequency;
+	std::chrono::milliseconds ms(period);
+	modeSwitchPeriod = ms;
 }
 
 void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
+	startRun = std::chrono::system_clock::now();
+	currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startRun);
+	lastModeSwitch = startRun;
 	currentMode = startMode; 
 	Mode* nextMode;
 	enabledTasks = currentMode->getScheduledTasks();
 	activeTasks = enabledTasks;
 
-	// while(currentTime < maxRunTime){
-	while (1) {
+	while (currentTime.count() < maxRunTime.count()) {
+		if (activeTasks.size() == 0)
+		{
+			activeTasks = enabledTasks;
+		}
+		
 		invokeNextTask();
 		nextMode = checkNextMode();
-		if (nextMode->getName().compare(currentMode->getName()) != 0){
-			currentMode = nextMode;
-			// modeTime = new std::chrono::milliseconds(0);
+		if(modeTime.count() >= modeSwitchPeriod.count()){
+			if (nextMode->getName().compare(currentMode->getName()) != 0){
+				currentMode = nextMode;
+				lastModeSwitch = std::chrono::system_clock::now();
+			}
 		}
 		else
 			updateModeTime();
@@ -127,7 +140,6 @@ void GiottoDirector::invokeNextTask(){
 }
 
 Mode* GiottoDirector::checkNextMode(){
-	//Check frequency
 	for (unsigned int i = 0; i < allTheSwitches.size(); ++i)
 	{
 		if(allTheSwitches[i]->getSource()->getName().compare(currentMode->getName()) == 0){
@@ -140,14 +152,17 @@ Mode* GiottoDirector::checkNextMode(){
 }
 
 void GiottoDirector::updateModeTime(){
-	
+	modeTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastModeSwitch);	
 }
 
 void GiottoDirector::updateActiveTasks(){
 	activeTasks.erase (activeTasks.begin());
-	cout << "current number of active tasks: " << activeTasks.size() << endl;
 }
 
 void GiottoDirector::advanceTime(){
+	currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startRun);
+}
 
+std::chrono::milliseconds GiottoDirector::getModeSwitchPeriod(){
+	return modeSwitchPeriod;
 }
