@@ -10,9 +10,10 @@ using namespace std;
 
 class SchedulerTask{
 public:
-	SchedulerTask(string id, std::chrono::milliseconds period){
+	SchedulerTask(string id, std::chrono::milliseconds period, unsigned int priority){
 		myID = id;
 		myPeriod = period;
+		myPriority = priority;
 	}
 	const string getID(){return myID;}
 	const std::chrono::milliseconds getPeriod(){return myPeriod;};
@@ -24,6 +25,7 @@ public:
 private:
 	string myID;
 	std::chrono::milliseconds myPeriod;
+	unsigned int myPriority;
 };
 
 static bool sortByPeriod (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPeriod() < rhs->getPeriod(); }
