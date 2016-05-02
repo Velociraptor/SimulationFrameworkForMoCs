@@ -25,7 +25,7 @@ vector<SchedulerTask*> PrepareSchedule::RecalculateActiveTasks(std::chrono::syst
 		;
 	}
 
-	for (int i = 0; i < enabledTasks.size(); ++i)
+	for (unsigned int i = 0; i < enabledTasks.size(); ++i)
 	{
 		if(enabledTasks[i]->getPeriod() >= currt && enabledTasks[i]->getPeriod() < (currt+cycleTime)){
 			activeTasks.push_back(enabledTasks[i]);
@@ -36,7 +36,7 @@ vector<SchedulerTask*> PrepareSchedule::RecalculateActiveTasks(std::chrono::syst
 
 vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks){
 	sort(unorderedTasks.begin(), unorderedTasks.end(), sortByPeriod);
-	int i = 0;
+	unsigned int i = 0;
 	while (i < unorderedTasks.size())
 	{
 		int j=1;

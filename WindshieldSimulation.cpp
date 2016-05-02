@@ -87,7 +87,8 @@ int main() {
 	vector<Port*> trivialPV;
 	Guard *rainGuard = new Guard(string("RainGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainGenFreq = 2000;
-	TaskInvocation *genRainInvoke = new TaskInvocation(generateRainfall, rainGuard, rainGenFreq);
+	unsigned int rainGenPriority = 1;
+	TaskInvocation *genRainInvoke = new TaskInvocation(generateRainfall, rainGuard, rainGenFreq, rainGenPriority);
 
 	// Rainfall Sensor accumulates rain over time to dictate rate of fall for controls
 	// input ports: generated rain from weather model, reset port (start false)
@@ -110,7 +111,8 @@ int main() {
 	Task *senseRainfall = new Task(string("SenseTheRain"), rainfallSensor);
 	Guard *sensorGuard = new Guard(string("SensorGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainSenseFreq = 2000;
-	TaskInvocation *senseRainInvoke = new TaskInvocation(senseRainfall, sensorGuard, rainSenseFreq);
+	unsigned int rainSensePriority = 2;
+	TaskInvocation *senseRainInvoke = new TaskInvocation(senseRainfall, sensorGuard, rainSenseFreq, rainSensePriority);
 
 	// Rainfall Register stores last rainfall sensor accumulator output for rate check
 	// input port: sensed rain accumulation from rainfall sensor
@@ -128,7 +130,8 @@ int main() {
 	Task *storeLatestRainfall = new Task(string("StoreLatestRain"), prevRainRegister);
 	Guard *rainRegGuard = new Guard(string("rainStoreGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainStoreFreq = 2000;
-	TaskInvocation *storeRainInvoke = new TaskInvocation(storeLatestRainfall, rainRegGuard, rainStoreFreq);
+	unsigned int rainStorePriority = 3;
+	TaskInvocation *storeRainInvoke = new TaskInvocation(storeLatestRainfall, rainRegGuard, rainStoreFreq, rainStorePriority);
 	
 	// Rainfall Rate tracks rainfall over time to send to mode control
 	// input ports: sensed rain accumulation from rainfall sensor, and previous value from register
@@ -147,7 +150,8 @@ int main() {
 	Task *checkRainfallRate = new Task(string("CheckRainRate"), rainfallRateCheck);
 	Guard *rainRateGuard = new Guard(string("rainRateGuard"), trivialTrueGuard, trivialPV);
 	unsigned int rainRateCheckFreq = 2000;
-	TaskInvocation *rainRateInvoke = new TaskInvocation(checkRainfallRate, rainRateGuard, rainRateCheckFreq);
+	unsigned int rainRatePriority = 4;
+	TaskInvocation *rainRateInvoke = new TaskInvocation(checkRainfallRate, rainRateGuard, rainRateCheckFreq, rainRatePriority);
 
 	// Mode task invocations for generating and tracking rainfall
 	vector<TaskInvocation*> lowRainTaskList;
@@ -178,13 +182,16 @@ int main() {
 	Task *actuateWiper = new Task(string("WipeItOff"), wiper);
 	Guard *wiperGuard = new Guard(string("WiperGuard"), trivialTrueGuard, trivialPV);
 	unsigned int lowWiperFreq = 250;
-	TaskInvocation *lowWiperInvoke = new TaskInvocation(actuateWiper, wiperGuard, lowWiperFreq);
+	unsigned int lowWiperPriority = 10;
+	TaskInvocation *lowWiperInvoke = new TaskInvocation(actuateWiper, wiperGuard, lowWiperFreq, lowWiperPriority);
 	lowRainTaskList.push_back(lowWiperInvoke);
 	unsigned int medWiperFreq = 500;
-	TaskInvocation *medWiperInvoke = new TaskInvocation(actuateWiper, wiperGuard, medWiperFreq);
+	unsigned int medWiperPriority = 10;
+	TaskInvocation *medWiperInvoke = new TaskInvocation(actuateWiper, wiperGuard, medWiperFreq, medWiperPriority);
 	medRainTaskList.push_back(medWiperInvoke);
 	unsigned int highWiperFreq = 1000;
-	TaskInvocation *highWiperInvoke = new TaskInvocation(actuateWiper, wiperGuard, highWiperFreq);
+	unsigned int highWiperPriority = 10;
+	TaskInvocation *highWiperInvoke = new TaskInvocation(actuateWiper, wiperGuard, highWiperFreq, highWiperPriority);
 	highRainTaskList.push_back(highWiperInvoke);
 
 	// Mode setup
