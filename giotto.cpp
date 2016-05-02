@@ -112,13 +112,14 @@ void GiottoDirector::Run(std::chrono::microseconds maxRunTime) {
 	enabledTasks = currentMode->getScheduledTasks();
 	PrepareSchedule mySchedule = PrepareSchedule(enabledTasks);
 	std::chrono::system_clock::time_point cycleStart = std::chrono::system_clock::now();
+	mySchedule.calculateCycleTime(enabledTasks);
 	activeTasks = mySchedule.RecalculateActiveTasks(cycleStart);
 
 	while (currentTime.count() < maxRunTime.count()) {	
 		if (activeTasks.size() == 0)
 		{
-			cycleStart = std::chrono::system_clock::now();
 			activeTasks = mySchedule.RecalculateActiveTasks(cycleStart);
+			cycleStart = std::chrono::system_clock::now();
 		}
 		
 		invokeNextTask();
