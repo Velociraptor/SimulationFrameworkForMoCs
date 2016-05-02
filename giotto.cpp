@@ -110,25 +110,30 @@ void GiottoDirector::Run(std::chrono::microseconds maxRunTime) {
 	currentMode = startMode; 
 	Mode* nextMode;
 	enabledTasks = currentMode->getScheduledTasks();
-	activeTasks = enabledTasks;
+	PrepareSchedule mySchedule = PrepareSchedule(enabledTasks);
+	std::chrono::system_clock::time_point cycleStart = std::chrono::system_clock::now();
+	activeTasks = mySchedule.RecalculateActiveTasks(cycleStart);
 
-	while (currentTime.count() < maxRunTime.count()) {
+	while (currentTime.count() < maxRunTime.count()) {	
 		if (activeTasks.size() == 0)
 		{
-			activeTasks = enabledTasks;
+			cycleStart = std::chrono::system_clock::now();
+			activeTasks = mySchedule.RecalculateActiveTasks(cycleStart);
 		}
 		
 		invokeNextTask();
-		nextMode = checkNextMode();
+		updateActiveTasks();
 		if(modeTime.count() >= modeSwitchPeriod.count()){
+			nextMode = checkNextMode();
+			lastModeSwitch = std::chrono::system_clock::now();
 			if (nextMode->getName().compare(currentMode->getName()) != 0){
 				currentMode = nextMode;
-				lastModeSwitch = std::chrono::system_clock::now();
+				enabledTasks = currentMode->getScheduledTasks();
+				mySchedule.calculateCycleTime(enabledTasks);
 			}
 		}
 		else
 			updateModeTime();
-		updateActiveTasks();
 		advanceTime();
 	}
 }

@@ -8,11 +8,46 @@
 
 using namespace std;
 
-// bool sortByPeriod (const SchedulerTask &lhs, const SchedulerTask &rhs) { return &lhs < &rhs; }
+PrepareSchedule::PrepareSchedule(vector<SchedulerTask*> t){
+	enabledTasks = t;
+}
 
+void PrepareSchedule::calculateCycleTime(vector<SchedulerTask*> sorted){
+	cycleTime = sorted[0]->getPeriod();;
+	enabledTasks = sorted;
+}
+
+vector<SchedulerTask*> PrepareSchedule::RecalculateActiveTasks(std::chrono::system_clock::time_point time_of_last_cycle){
+	vector<SchedulerTask*> activeTasks;
+	std::chrono::microseconds currt = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
+	while(currt < cycleTime){
+		currt = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
+		;
+	}
+
+	for (int i = 0; i < enabledTasks.size(); ++i)
+	{
+		if(enabledTasks[i]->getPeriod() >= currt && enabledTasks[i]->getPeriod() < (currt+cycleTime)){
+			activeTasks.push_back(enabledTasks[i]);
+		} 
+	}
+	return activeTasks;
+}
 
 vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks){
 	sort(unorderedTasks.begin(), unorderedTasks.end(), sortByPeriod);
+	int i = 0;
+	while (i < unorderedTasks.size())
+	{
+		int j=1;
+		while(unorderedTasks[i]->getPeriod() == unorderedTasks[i+j]->getPeriod()){
+			j++;
+		}
+		if(j>1){
+			sort(unorderedTasks.begin()+i, unorderedTasks.end()+i+j-1, sortByPriority);
+		}
+		i+=j;
+	}
 	return unorderedTasks;
 }
 

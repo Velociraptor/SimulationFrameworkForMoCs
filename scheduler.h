@@ -10,26 +10,39 @@ using namespace std;
 
 class SchedulerTask{
 public:
-	SchedulerTask(string id, std::chrono::milliseconds period, unsigned int priority){
+	SchedulerTask(string id, std::chrono::microseconds period, unsigned int priority){
 		myID = id;
 		myPeriod = period;
 		myPriority = priority;
 	}
-	const string getID(){return myID;}
-	const std::chrono::milliseconds getPeriod(){return myPeriod;};
-
+	string getID(){return myID;}
+	std::chrono::microseconds getPeriod(){return myPeriod;};
+	unsigned int getPriotity(){return myPriority;};
 	bool operator <(const SchedulerTask& s)
       {
          return myPeriod.count()<s.myPeriod.count();
       }
 private:
 	string myID;
-	std::chrono::milliseconds myPeriod;
+	std::chrono::microseconds myPeriod;
 	unsigned int myPriority;
 };
 
+
 static bool sortByPeriod (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPeriod() < rhs->getPeriod(); }
+static bool sortByPriority (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPriotity() < rhs->getPriotity(); }
 
 vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks);
+
+class PrepareSchedule{
+public:
+	PrepareSchedule(vector<SchedulerTask*>);
+	void calculateCycleTime(vector<SchedulerTask*>);
+	vector<SchedulerTask*> RecalculateActiveTasks(std::chrono::system_clock::time_point);
+private:
+
+	std::chrono::microseconds cycleTime;
+	vector<SchedulerTask*> enabledTasks;
+};
 
 #endif
