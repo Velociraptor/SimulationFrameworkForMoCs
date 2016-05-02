@@ -44,7 +44,7 @@ vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks){
 			j++;
 		}
 		if(j>1){
-			sort(unorderedTasks.begin()+i, unorderedTasks.end()+i+j-1, sortByPriority);
+			sort(unorderedTasks.begin()+i, unorderedTasks.begin()+i+j-1, sortByPriority);
 		}
 		i+=j;
 	}
