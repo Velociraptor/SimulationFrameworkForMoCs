@@ -136,6 +136,7 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 				mySchedule.setStartTime(std::chrono::system_clock::now());
 				cycleStart = std::chrono::system_clock::now();
 				activeTasks = mySchedule.RecalculateActiveTasks(cycleStart);
+				mySchedule.resetAllTaskCalls();
 			}
 		}
 		else

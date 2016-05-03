@@ -41,6 +41,13 @@ void PrepareSchedule::setStartTime(std::chrono::system_clock::time_point newStar
 	startTime = newStart;
 }
 
+void PrepareSchedule::resetAllTaskCalls(){
+	for (int i = 0; i < enabledTasks.size(); ++i)
+	{
+		enabledTasks[i]->resetCallNum();
+	}
+}
+
 vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks){
 	sort(unorderedTasks.begin(), unorderedTasks.end(), sortByPeriod);
 	unsigned int i = 0;

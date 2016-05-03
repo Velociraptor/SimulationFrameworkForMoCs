@@ -21,6 +21,7 @@ public:
 	unsigned int getPriority(){return myPriority;};
 	unsigned long int getCallNum(){return number_of_calls;};
 	void incrementCallNum(){number_of_calls++;};
+	void resetCallNum(){number_of_calls = 0;};
 	bool operator <(const SchedulerTask& s)
       {
          return myPeriod.count()<s.myPeriod.count();
@@ -44,6 +45,7 @@ public:
 	void calculateCycleTime(vector<SchedulerTask*>);
 	vector<SchedulerTask*> RecalculateActiveTasks(std::chrono::system_clock::time_point);
 	void setStartTime(std::chrono::system_clock::time_point);
+	void resetAllTaskCalls();
 private:
 
 	std::chrono::milliseconds cycleTime;
