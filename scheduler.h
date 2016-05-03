@@ -17,7 +17,7 @@ public:
 	}
 	string getID(){return myID;}
 	std::chrono::microseconds getPeriod(){return myPeriod;};
-	unsigned int getPriotity(){return myPriority;};
+	unsigned int getPriority(){return myPriority;};
 	bool operator <(const SchedulerTask& s)
       {
          return myPeriod.count()<s.myPeriod.count();
@@ -30,7 +30,7 @@ private:
 
 
 static bool sortByPeriod (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPeriod() < rhs->getPeriod(); }
-static bool sortByPriority (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPriotity() < rhs->getPriotity(); }
+static bool sortByPriority (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPriority() < rhs->getPriority(); }
 
 vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks);
 

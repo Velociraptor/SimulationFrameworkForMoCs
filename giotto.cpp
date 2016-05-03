@@ -118,7 +118,9 @@ void GiottoDirector::Run(std::chrono::microseconds maxRunTime) {
 	while (currentTime.count() < maxRunTime.count()) {	
 		if (activeTasks.size() == 0)
 		{
+			cout << "Completed all active tasks - recalculating for next cycle" << endl;
 			activeTasks = mySchedule.RecalculateActiveTasks(cycleStart);
+			cout << "New active tasks size: " << activeTasks.size() << endl;
 			cycleStart = std::chrono::system_clock::now();
 		}
 		
