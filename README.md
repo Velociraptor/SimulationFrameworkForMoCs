@@ -13,9 +13,5 @@ actors.cpp - implementation of Actor classes
 scheduler.h - header file for Scheduler
 scheduler.cpp - implementation thereof
 
-
-Scheduler Notes:
--Cycle time is determined by minimum task period
--At each cycle, generate new list of "active" tasks to run in order
--ASSUMPTION: total sum of execution times is less than cycle time
--Task is added to "active" if current time is within its [period*n to period*n+cycle]
+# Simulation
+The current windshield simulation consists of a simple actor model, a very naive scheduler, and a Giotto implementation to drive execution based on scheduled periodic tasks.  The simulation can run with either a ramping or random weather model, exhibiting different mode-switching behavior between low, medium, and high rain modes (dictating the frequency of the wiper task).
