@@ -2,7 +2,7 @@
 EE249B Project to implement Giotto (and maybe someday Ptides) models of Computation in C++
 
 # Files
-windshieldsim.makefile - Make all the things!
+windshieldsim.makefile - Make all the things!  
 WindshieldSimulation.cpp - runs main simulation(s)  
 giotto.h - header file for Giotto-related classes  
 giotto.cpp - implementation of Giotto-related classes  
