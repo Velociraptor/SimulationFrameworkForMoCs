@@ -43,6 +43,7 @@ public:
 	PrepareSchedule(vector<SchedulerTask*>, std::chrono::system_clock::time_point);
 	void calculateCycleTime(vector<SchedulerTask*>);
 	vector<SchedulerTask*> RecalculateActiveTasks(std::chrono::system_clock::time_point);
+	void setStartTime(std::chrono::system_clock::time_point);
 private:
 
 	std::chrono::milliseconds cycleTime;

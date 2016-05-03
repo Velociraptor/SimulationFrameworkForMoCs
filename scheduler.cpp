@@ -15,7 +15,6 @@ PrepareSchedule::PrepareSchedule(vector<SchedulerTask*> t, std::chrono::system_c
 
 void PrepareSchedule::calculateCycleTime(vector<SchedulerTask*> sorted){
 	cycleTime = sorted[0]->getPeriod();
-	cout<<cycleTime.count()<<endl;
 	enabledTasks = sorted;
 }
 
@@ -36,6 +35,10 @@ vector<SchedulerTask*> PrepareSchedule::RecalculateActiveTasks(std::chrono::syst
 		}
 	}
 	return activeTasks;
+}
+
+void PrepareSchedule::setStartTime(std::chrono::system_clock::time_point newStart){
+	startTime = newStart;
 }
 
 vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks){
