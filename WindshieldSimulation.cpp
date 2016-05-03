@@ -8,7 +8,7 @@
 bool rainRateLow (vector<Port*> p) {
 	// rainfall low from latest check
 	int currentRainRate = p[0]->GetValueInt();
-	if (currentRainRate < 34) {
+	if (currentRainRate > -1 && currentRainRate < 34) {
 		return true;
 	} else {
 		return false;
@@ -229,7 +229,7 @@ int main() {
 	unsigned int modeSwitchCheckFreq = 10;
 	GiottoDirector giottoD = GiottoDirector(lowRainMode, rainModeSwitches, modeSwitchCheckFreq);
 	// std::chrono::milliseconds m(10000);
-	std::chrono::milliseconds m(100);
+	std::chrono::milliseconds m(1000);
 	giottoD.Run(m);
 
 	// // // Ptides simulation

@@ -129,7 +129,7 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 			nextMode = checkNextMode();
 			lastModeSwitch = std::chrono::system_clock::now();
 			if (nextMode->getName().compare(currentMode->getName()) != 0){
-				cout<<"Change Mode!!"<<endl;
+				cout << "Changing Mode to " << nextMode->getName() << endl;
 				currentMode = nextMode;
 				enabledTasks = currentMode->getScheduledTasks();
 				mySchedule.calculateCycleTime(enabledTasks);

@@ -28,8 +28,7 @@ vector<SchedulerTask*> PrepareSchedule::RecalculateActiveTasks(std::chrono::syst
 	std::chrono::system_clock::time_point current_time = std::chrono::system_clock::now();
 	for (unsigned int i = 0; i < enabledTasks.size(); ++i)
 	{
-		// if((enabledTasks[i]->getPeriod().count())*(enabledTasks[i]->getCallNum()) < std::chrono::duration_cast<std::chrono::milliseconds>(current_time - startTime).count())
-		if((enabledTasks[i]->getPeriod().count())*(enabledTasks[i]->getCallNum()) < std::chrono::duration_cast<std::chrono::milliseconds>(current_time - startTime + cycleTime).count()) // ??? Wasn't this what we wanted ?? 
+		if((enabledTasks[i]->getPeriod().count())*(enabledTasks[i]->getCallNum()) < std::chrono::duration_cast<std::chrono::milliseconds>(current_time - startTime + cycleTime).count()) 
 		{
 			activeTasks.push_back(enabledTasks[i]);
 		}
