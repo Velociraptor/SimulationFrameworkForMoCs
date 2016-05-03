@@ -8,25 +8,29 @@
 
 using namespace std;
 
-PrepareSchedule::PrepareSchedule(vector<SchedulerTask*> t){
+PrepareSchedule::PrepareSchedule(vector<SchedulerTask*> t, std::chrono::system_clock::time_point start){
 	enabledTasks = t;
+	startTime = start;
 }
 
 void PrepareSchedule::calculateCycleTime(vector<SchedulerTask*> sorted){
-	cycleTime = sorted[0]->getPeriod();;
+	cycleTime = sorted[0]->getPeriod();
+	cout<<cycleTime.count()<<endl;
 	enabledTasks = sorted;
 }
 
 vector<SchedulerTask*> PrepareSchedule::RecalculateActiveTasks(std::chrono::system_clock::time_point time_of_last_cycle){
 	vector<SchedulerTask*> activeTasks;
-	std::chrono::microseconds currt = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
-	while(currt < cycleTime){
-		currt = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
+	std::chrono::microseconds wait_for_cycle = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
+	while(wait_for_cycle < cycleTime){
+		wait_for_cycle = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
 		;
 	}
+	std::chrono::system_clock::time_point current_time = std::chrono::system_clock::now();
 	for (unsigned int i = 0; i < enabledTasks.size(); ++i)
 	{
-		if(enabledTasks[i]->getPeriod() >= currt && enabledTasks[i]->getPeriod() < (currt+cycleTime)){
+		if((enabledTasks[i]->getPeriod().count())*(enabledTasks[i]->getCallNum()) < std::chrono::duration_cast<std::chrono::microseconds>(current_time - startTime).count())
+		{
 			activeTasks.push_back(enabledTasks[i]);
 		}
 	}

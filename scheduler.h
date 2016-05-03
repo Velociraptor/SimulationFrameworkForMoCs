@@ -14,10 +14,13 @@ public:
 		myID = id;
 		myPeriod = period;
 		myPriority = priority;
+		number_of_calls = 0;
 	}
 	string getID(){return myID;}
 	std::chrono::microseconds getPeriod(){return myPeriod;};
 	unsigned int getPriority(){return myPriority;};
+	unsigned long int getCallNum(){return number_of_calls;};
+	void incrementCallNum(){number_of_calls++;};
 	bool operator <(const SchedulerTask& s)
       {
          return myPeriod.count()<s.myPeriod.count();
@@ -26,6 +29,7 @@ private:
 	string myID;
 	std::chrono::microseconds myPeriod;
 	unsigned int myPriority;
+	unsigned long int number_of_calls;
 };
 
 
@@ -36,13 +40,14 @@ vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks);
 
 class PrepareSchedule{
 public:
-	PrepareSchedule(vector<SchedulerTask*>);
+	PrepareSchedule(vector<SchedulerTask*>, std::chrono::system_clock::time_point);
 	void calculateCycleTime(vector<SchedulerTask*>);
 	vector<SchedulerTask*> RecalculateActiveTasks(std::chrono::system_clock::time_point);
 private:
 
 	std::chrono::microseconds cycleTime;
 	vector<SchedulerTask*> enabledTasks;
+	std::chrono::system_clock::time_point startTime;
 };
 
 #endif
