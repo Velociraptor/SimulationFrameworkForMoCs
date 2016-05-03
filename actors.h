@@ -113,6 +113,8 @@ public:
 	RepeatingRamp(string, vector<Port*>, vector<Port*>);
 	string ActorType();
 	void Compute();
+private:
+	int nextOutput;
 };
 
 #endif

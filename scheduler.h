@@ -10,14 +10,14 @@ using namespace std;
 
 class SchedulerTask{
 public:
-	SchedulerTask(string id, std::chrono::microseconds period, unsigned int priority){
+	SchedulerTask(string id, std::chrono::milliseconds period, unsigned int priority){
 		myID = id;
 		myPeriod = period;
 		myPriority = priority;
 		number_of_calls = 0;
 	}
 	string getID(){return myID;}
-	std::chrono::microseconds getPeriod(){return myPeriod;};
+	std::chrono::milliseconds getPeriod(){return myPeriod;};
 	unsigned int getPriority(){return myPriority;};
 	unsigned long int getCallNum(){return number_of_calls;};
 	void incrementCallNum(){number_of_calls++;};
@@ -27,7 +27,7 @@ public:
       }
 private:
 	string myID;
-	std::chrono::microseconds myPeriod;
+	std::chrono::milliseconds myPeriod;
 	unsigned int myPriority;
 	unsigned long int number_of_calls;
 };
@@ -45,7 +45,7 @@ public:
 	vector<SchedulerTask*> RecalculateActiveTasks(std::chrono::system_clock::time_point);
 private:
 
-	std::chrono::microseconds cycleTime;
+	std::chrono::milliseconds cycleTime;
 	vector<SchedulerTask*> enabledTasks;
 	std::chrono::system_clock::time_point startTime;
 };

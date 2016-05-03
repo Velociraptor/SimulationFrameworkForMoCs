@@ -13,22 +13,22 @@ Port::Port (string name, PortContents portInit) {
 }
 
 void Port::SetValueBool(bool b){
-	cout << "Port " << myName << " new bool value: " << b << endl;
+	cout << "    Port " << myName << " new bool value: " << b << endl;
 	myContents.portValue.valBool = bool(b);
 }
 
 void Port::SetValueInt(int i){
-	cout << "Port " << myName << " new int value: " << i << endl;
+	cout << "    Port " << myName << " new int value: " << i << endl;
 	myContents.portValue.valInt = int(i);
 }
 
 void Port::SetValueFloat(float f){
-	cout << "Port " << myName << " new float value: " << f << endl;
+	cout << "    Port " << myName << " new float value: " << f << endl;
 	myContents.portValue.valFloat = float(f);
 }
 
 void Port::SetValueDouble(double d){
-	cout << "Port " << myName << " new double value: " << d << endl;
+	cout << "    Port " << myName << " new double value: " << d << endl;
 	myContents.portValue.valDouble = double(d);
 }
 
@@ -64,7 +64,7 @@ string ComparatorGreater::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void ComparatorGreater::Compute () {
-	cout << "Actor " << Name() << " computing" << endl;
+	cout << "  Actor " << Name() << " computing" << endl;
 	bool output = false;
 	PortType pt = myInputs[0]->Type();
 	switch (pt) {
@@ -124,7 +124,7 @@ string RandomIntInRange::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void RandomIntInRange::Compute () {
-	cout << "Actor " << Name() << " computing" << endl;
+	cout << "  Actor " << Name() << " computing" << endl;
 	int rangeBottom = 0;
 	int rangeTop = myInputs[0]->GetValueInt();
 	int output = rangeBottom + (rand() % (int)(rangeTop - rangeBottom + 1));
@@ -152,12 +152,12 @@ string AccumulatorWithReset::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void AccumulatorWithReset::Compute () {
-	cout << "Actor " << Name() << " computing" << endl;
+	cout << "  Actor " << Name() << " computing" << endl;
 	// check reset and set output to zero if appropriate
 	// (and set reset port back to false) 
 	bool reset = myInputs[1]->GetValueBool();
 	if (reset) {
-		cout << "Accumulator Actor " << Name() << " resetting" << endl;
+		cout << "   Accumulator Actor " << Name() << " resetting" << endl;
 		myOutputs[0]->SetValueInt(0);
 		myInputs[1]->SetValueBool(false);
 	} else {
@@ -165,7 +165,7 @@ void AccumulatorWithReset::Compute () {
 		int inputAdd = myInputs[0]->GetValueInt();
 		int prevOut = myOutputs[0]->GetValueInt();
 		myOutputs[0]->SetValueInt(prevOut + inputAdd);
-		cout << "Accumulator Actor " << Name() << " clearing input" << endl;
+		cout << "   Accumulator Actor " << Name() << " clearing input" << endl;
 		myInputs[0]->SetValueInt(0);
 	}
 }
@@ -196,7 +196,7 @@ string Difference::ActorType () {
 // Perform computation to set output port value
 // based on current input port values
 void Difference::Compute () {
-	cout << "Actor " << Name() << " computing" << endl;
+	cout << "  Actor " << Name() << " computing" << endl;
 	int diff = myInputs[0]->GetValueInt() - myInputs[1]->GetValueInt();
 	myOutputs[0]->SetValueInt(diff);
 }
@@ -221,7 +221,7 @@ string Trigger::ActorType () {
 
 // Set output port value to true
 void Trigger::Compute () {
-	cout << "Actor " << Name() << " computing" << endl;
+	cout << "  Actor " << Name() << " computing" << endl;
 	myOutputs[0]->SetValueBool(true);
 }
 
@@ -246,7 +246,7 @@ string Register::ActorType () {
 
 // Shift internal storage to output, and input to internal storage
 void Register::Compute () {
-	cout << "Actor " << Name() << " computing" << endl;
+	cout << "  Actor " << Name() << " computing" << endl;
 	myOutputs[0]->SetValueInt(internalStorage);
 	internalStorage = myInputs[0]->GetValueInt();
 }
@@ -262,6 +262,7 @@ RepeatingRamp::RepeatingRamp(string s, vector<Port*> inputPorts,
 	if (outputPorts.size() != 1) {
 		cout << "Warning: RepeatingRamp Actor received unexpected number of output ports." << endl;
 	}
+	nextOutput = myInputs[1]->GetValueInt();
 }
 
 // Return actor type
@@ -271,14 +272,15 @@ string RepeatingRamp::ActorType () {
 
 // Set output port value to true
 void RepeatingRamp::Compute () {
-	cout << "Actor " << Name() << " computing" << endl;
+	cout << "  Actor " << Name() << " computing" << endl;
 	int increment = myInputs[1]->GetValueInt();
 	int maximal = myInputs[0]->GetValueInt();
-	int newOutput = myOutputs[0]->GetValueInt() + increment;
-	if (newOutput > maximal) {
-		newOutput = 0;
+	// int newOutput = myOutputs[0]->GetValueInt() + increment;
+	nextOutput = nextOutput + increment;
+	if (nextOutput > maximal) {
+		nextOutput = 0;
 	}
-	myOutputs[0]->SetValueInt(newOutput);
+	myOutputs[0]->SetValueInt(nextOutput);
 }
 
 // // Unit Testing

@@ -21,15 +21,16 @@ void PrepareSchedule::calculateCycleTime(vector<SchedulerTask*> sorted){
 
 vector<SchedulerTask*> PrepareSchedule::RecalculateActiveTasks(std::chrono::system_clock::time_point time_of_last_cycle){
 	vector<SchedulerTask*> activeTasks;
-	std::chrono::microseconds wait_for_cycle = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
+	std::chrono::milliseconds wait_for_cycle = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
 	while(wait_for_cycle < cycleTime){
-		wait_for_cycle = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
+		wait_for_cycle = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - time_of_last_cycle);
 		;
 	}
 	std::chrono::system_clock::time_point current_time = std::chrono::system_clock::now();
 	for (unsigned int i = 0; i < enabledTasks.size(); ++i)
 	{
-		if((enabledTasks[i]->getPeriod().count())*(enabledTasks[i]->getCallNum()) < std::chrono::duration_cast<std::chrono::microseconds>(current_time - startTime).count())
+		// if((enabledTasks[i]->getPeriod().count())*(enabledTasks[i]->getCallNum()) < std::chrono::duration_cast<std::chrono::milliseconds>(current_time - startTime).count())
+		if((enabledTasks[i]->getPeriod().count())*(enabledTasks[i]->getCallNum()) < std::chrono::duration_cast<std::chrono::milliseconds>(current_time - startTime + cycleTime).count()) // ??? Wasn't this what we wanted ?? 
 		{
 			activeTasks.push_back(enabledTasks[i]);
 		}

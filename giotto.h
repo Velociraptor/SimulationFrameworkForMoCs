@@ -39,7 +39,7 @@ public:
 	void SetFrequency (unsigned int);
 	SchedulerTask* getSchedulerTask(){return mySchedTask;};
 	Task* getTask(){return myTask;}
-	std::chrono::microseconds getPeriod();
+	std::chrono::milliseconds getPeriod();
 	unsigned int getPriority(){return priority;};
 private:
 	unsigned int frequency;
@@ -93,19 +93,19 @@ private:
 // 	Config( Mode);
 // private:
 // 	Mode myMode;
-// 	std::chrono::microseconds ModeTime;
-// 	std::chrono::microseconds TimeStamp;
+// 	std::chrono::milliseconds ModeTime;
+// 	std::chrono::milliseconds TimeStamp;
 // 	vector<SchedulerTask*> ActiveTasks;
 // };
 
 class GiottoDirector{
 public:
 	GiottoDirector(Mode*, vector<ModeSwitch*>, unsigned int);
-	void Run(std::chrono::microseconds);
+	void Run(std::chrono::milliseconds);
 	vector<SchedulerTask*> GetEnabledTaskList() {return enabledTasks;};
 	vector<SchedulerTask*> GetActiveTaskList() {return activeTasks;};
 	vector<ModeSwitch*> GetModeSwitches(){return allTheSwitches;};
-	std::chrono::microseconds getModeSwitchPeriod();
+	std::chrono::milliseconds getModeSwitchPeriod();
 
 private:
 
@@ -117,9 +117,9 @@ private:
 	vector<ModeSwitch*> allTheSwitches;
 	std::chrono::system_clock::time_point startRun;
 	std::chrono::system_clock::time_point lastModeSwitch;
-	std::chrono::microseconds modeTime;
-	std::chrono::microseconds currentTime;
-	std::chrono::microseconds modeSwitchPeriod;
+	std::chrono::milliseconds modeTime;
+	std::chrono::milliseconds currentTime;
+	std::chrono::milliseconds modeSwitchPeriod;
 	void invokeNextTask();
 	Mode* checkNextMode();
 	void updateModeTime();

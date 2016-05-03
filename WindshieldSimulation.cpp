@@ -196,8 +196,6 @@ int main() {
 	TaskInvocation *highWiperInvoke = new TaskInvocation(actuateWiperHigh, wiperGuard, highWiperFreq, highWiperPriority);
 	highRainTaskList.push_back(highWiperInvoke);
 
-	cout << "Mode setup" << endl;
-
 	// Mode setup
 	Mode *lowRainMode = new Mode(string("lowRainMode"), lowRainTaskList);
 	Mode *medRainMode = new Mode(string("medRainMode"), medRainTaskList);
@@ -230,7 +228,8 @@ int main() {
 	// Initialize director with start mode and mode switches and kick off simulation
 	unsigned int modeSwitchCheckFreq = 10;
 	GiottoDirector giottoD = GiottoDirector(lowRainMode, rainModeSwitches, modeSwitchCheckFreq);
-	std::chrono::milliseconds m(10000);
+	// std::chrono::milliseconds m(10000);
+	std::chrono::milliseconds m(100);
 	giottoD.Run(m);
 
 	// // // Ptides simulation
