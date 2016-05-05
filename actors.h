@@ -97,6 +97,14 @@ public:
 	void Compute();
 };
 
+// threshold trigger
+class ThresholdTrigger : public Actor {
+public:
+	ThresholdTrigger(string, vector<Port*>, vector<Port*>);
+	string ActorType();
+	void Compute();
+};
+
 // register
 class Register : public Actor {
 public:

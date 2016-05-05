@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Task::Task(string name, Actor* a, chrono::milliseconds t){
+PTask::PTask(string name, Actor* a, chrono::milliseconds t){
 	myName = name;
 	myActor = a;
 	myDelay = t;

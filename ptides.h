@@ -10,9 +10,9 @@
 
 using namespace std;
 
-class Task{
+class PTask{
 public:
-	Task(string, Actor*, chrono::milliseconds);
+	PTask(string, Actor*, chrono::milliseconds);
 	string getName(){return myName;};
 	Actor* getActor(){return myActor;};
 	chrono::milliseconds getDelay(){return myDelay;};
@@ -25,13 +25,13 @@ private:
 
 class Platform{
 public:
-	Platform(string, vector<Task*>, unsigned int); //What is the type of platformClockTime????
+	Platform(string, vector<PTask*>, unsigned int); //What is the type of platformClockTime????
 	string getName(){return myName;};
-	vector<Task*> getTasks(){return myTasks;};
+	vector<PTask*> getTasks(){return myTasks;};
 	unsigned int getClockTime(){return myClockTime;};
 private:
 	string myName;
-	vector<Task*> myTasks;
+	vector<PTask*> myTasks;
 	unsigned int myClockTime;
 };
 
@@ -57,7 +57,7 @@ private:
 	vector<Platform*> allPlatforms;
 	vector<Network*> allNetworks;
 	unsigned int startTrigger;
-	chrono::milliseconds TimeStamp; //What is the type for TimeStamp????
+	chrono::milliseconds TimeStamp; //What is the type for TimeStamp???? maybe a long??
 };
 
 #endif

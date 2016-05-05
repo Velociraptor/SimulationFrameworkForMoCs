@@ -225,6 +225,34 @@ void Trigger::Compute () {
 	myOutputs[0]->SetValueBool(true);
 }
 
+// Constructor: call base class constructor and warn on unexpected port vector sizes
+// expected input ports: 2 - numeric (threshold and current value)
+// expected output ports: 1 - bool (true when triggered)
+ThresholdTrigger::ThresholdTrigger(string s, vector<Port*> inputPorts, 
+		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
+	if (inputPorts.size() != 2) {
+		cout << "Warning: ThresholdTrigger Actor received unexpected number of input ports." << endl;
+	}
+	if (outputPorts.size() != 1) {
+		cout << "Warning: ThresholdTrigger Actor received unexpected number of output ports." << endl;
+	}
+}
+
+// Return actor type
+string ThresholdTrigger::ActorType () {
+	return "ThresholdTrigger";
+}
+
+// Set output port value to true if threshold crossed
+void ThresholdTrigger::Compute () {
+	cout << "  Actor " << Name() << " computing" << endl;
+	if (myInputs[1]->GetValueInt() > myInputs[0]->GetValueInt()) {
+		myOutputs[0]->SetValueBool(true);
+	} else {
+		myOutputs[0]->SetValueBool(false);
+	}
+}
+
 // Parent constructor plus initially set internalStorage to zero
 // expected input ports: 1 - numeric
 // expected output ports: 1 - numeric (gives previous stored value)
