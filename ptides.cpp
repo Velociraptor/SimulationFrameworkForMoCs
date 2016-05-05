@@ -26,12 +26,16 @@ Network::Network(string name, Platform* p1, Platform* p2, chrono::milliseconds d
 	myDelay = d;
 }
 
-PtidesDirector::PtidesDirector(vector<Platform*> p, vector<Network*> n, chrono::milliseconds ts){
-	allPlatforms = p;
+PtidesDirector::PtidesDirector(Platform* p, vector<Network*> n, chrono::milliseconds ts){
+	firstPlatforms = p;
 	allNetworks = n;
 	TimeStamp = ts;
 }
 
 void PtidesDirector::Run(){
-
+	for (int i = 0; i < firstPlatforms->getTasks().size(); ++i)
+		{
+			/* code */
+		}
+	//findNextPlatform();
 }

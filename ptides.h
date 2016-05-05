@@ -51,10 +51,10 @@ private:
 
 class PtidesDirector{
 public:
-	PtidesDirector(vector<Platform*>, vector<Network*>, chrono::milliseconds);
+	PtidesDirector(Platform*, vector<Network*>, chrono::milliseconds);
 	void Run();
 private:
-	vector<Platform*> allPlatforms;
+	Platform* firstPlatforms;
 	vector<Network*> allNetworks;
 	chrono::milliseconds TimeStamp; //What is the type for TimeStamp???? maybe a long??
 };
