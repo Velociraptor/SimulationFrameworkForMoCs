@@ -70,6 +70,7 @@ std::chrono::milliseconds TaskInvocation::getPeriod(){
 	std::chrono::milliseconds m(period);
 	return m;
 }
+
 // ActuatorUpdate::ActuatorUpdate(Guard g, unsigned int f) {
 // 	myGuard = g;
 // 	frequency = f;
@@ -92,8 +93,21 @@ ModeSwitch::ModeSwitch(Guard* g, Mode* from, Mode* to) {
 // 	TimetStamp = new std::chrono::milliseconds(0);
 // 	ModeTime = new std::chrono::milliseconds(0);
 // }
+Interrupt::Interrupt(string name, PtidesDirector* pd){
+	myName = name;
+	myPtidesDirector = pd;
+}
 
-GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned int f) {
+InterruptInvocation::InterruptInvocation(Interrupt* i, Guard* g, unsigned int p, unsigned int frequency){
+	myInterrupt = i;
+	myGuard = g;
+	priority = p;
+	int t = (int)1000/frequency;
+	std::chrono::milliseconds m(t);
+	period = m;
+}
+
+GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned int f, vector<InterruptInvocation*> interrupts) {
 	startMode = m;
 	allTheSwitches = switches;
 	currentMode = m;
@@ -101,6 +115,7 @@ GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned i
 	int period = (int)1000/ModeSwitchFrequency;
 	std::chrono::milliseconds ms(period);
 	modeSwitchPeriod = ms;
+	myInterrupts = interrupts;
 }
 
 void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
@@ -143,6 +158,7 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 		}
 		else
 			updateModeTime();
+		checkForInterrupts();
 		advanceTime();
 	}
 }
@@ -181,4 +197,13 @@ void GiottoDirector::advanceTime(){
 
 std::chrono::milliseconds GiottoDirector::getModeSwitchPeriod(){
 	return modeSwitchPeriod;
+}
+
+void GiottoDirector::checkForInterrupts(){
+	for (int i = 0; i < myInterrupts.size(); ++i)
+	{
+		if(myInterrupts[i]->getGuard()->Check())
+			myInterrupts[i]->getInterrupt()->getDirector()->Run();
+	}
+	return;
 }

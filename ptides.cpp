@@ -13,7 +13,7 @@ PTask::PTask(string name, Actor* a, chrono::milliseconds t){
 	myDelay = t;
 }
 
-Platform::Platform(string name, vector<Task*> tasks, unsigned int clktime){
+Platform::Platform(string name, vector<PTask*> tasks, unsigned int clktime){
 	myName = name;
 	myTasks = tasks;
 	myClockTime = clktime;
@@ -26,13 +26,12 @@ Network::Network(string name, Platform* p1, Platform* p2, chrono::milliseconds d
 	myDelay = d;
 }
 
-PtidesDirector::PtidesDirector(vector<Platform*> p, vector<Network*> n, unsigned int trig, chrono::milliseconds ts){
+PtidesDirector::PtidesDirector(vector<Platform*> p, vector<Network*> n, chrono::milliseconds ts){
 	allPlatforms = p;
 	allNetworks = n;
-	startTrigger = trig;
 	TimeStamp = ts;
 }
 
-void PtidesDirector::Run(unsigned int trig){
+void PtidesDirector::Run(){
 
 }
