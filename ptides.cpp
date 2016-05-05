@@ -26,10 +26,9 @@ Network::Network(string name, Platform* p1, Platform* p2, chrono::milliseconds d
 	myDelay = d;
 }
 
-PtidesDirector::PtidesDirector(vector<Platform*> p, vector<Network*> n, unsigned int trig, chrono::milliseconds ts){
+PtidesDirector::PtidesDirector(vector<Platform*> p, vector<Network*> n, chrono::milliseconds ts){
 	allPlatforms = p;
 	allNetworks = n;
-	startTrigger = trig;
 	TimeStamp = ts;
 }
 
