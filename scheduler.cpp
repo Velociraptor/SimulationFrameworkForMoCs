@@ -41,7 +41,7 @@ void PrepareSchedule::setStartTime(std::chrono::system_clock::time_point newStar
 }
 
 void PrepareSchedule::resetAllTaskCalls(){
-	for (int i = 0; i < enabledTasks.size(); ++i)
+	for (unsigned int i = 0; i < enabledTasks.size(); ++i)
 	{
 		enabledTasks[i]->resetCallNum();
 	}
