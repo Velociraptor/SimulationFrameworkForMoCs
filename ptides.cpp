@@ -53,6 +53,8 @@ void PtidesDirector::FindNextPlatform() {
 
 void PtidesDirector::Run(){
 	running = true;
+	std::chrono::milliseconds m(0);
+	TimeStamp = m;
 	while(running){
 		for (int i = 0; i < currentPlatform->getTasks().size(); ++i)
 			{
@@ -62,4 +64,5 @@ void PtidesDirector::Run(){
 		FindNextPlatform();
 	}
 	cout << "PTIDES run completed in " << TimeStamp.count() << " ms" << endl;
+	currentPlatform = firstPlatform;
 }

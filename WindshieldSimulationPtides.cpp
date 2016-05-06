@@ -122,8 +122,8 @@ int main() {
 	// Initialize Giotto wrapper director and kick off simulation
 	vector<ModeSwitch*> noModeSwitches;
 	unsigned int noModeSwitchCheckFreq = 1;
-	GiottoDirector giottoWrapperD = GiottoDirector(wrapperMode, noModeSwitches, noModeSwitchCheckFreq, giottoInterrupts);
-	std::chrono::milliseconds m(1000);
+	GiottoDirector giottoWrapperD = GiottoDirector(wrapperMode, noModeSwitches, noModeSwitchCheckFreq, giottoInterrupts, rainIntFreq);
+	std::chrono::milliseconds m(10000);
 	giottoWrapperD.Run(m);
 
 	return 0;
