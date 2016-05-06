@@ -98,24 +98,25 @@ Interrupt::Interrupt(string name, PtidesDirector* pd){
 	myPtidesDirector = pd;
 }
 
-InterruptInvocation::InterruptInvocation(Interrupt* i, Guard* g, unsigned int p, unsigned int frequency){
+InterruptInvocation::InterruptInvocation(Interrupt* i, Guard* g, unsigned int p){
 	myInterrupt = i;
 	myGuard = g;
 	priority = p;
-	int t = (int)1000/frequency;
-	std::chrono::milliseconds m(t);
-	period = m;
 }
 
-GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned int f, vector<InterruptInvocation*> interrupts) {
+GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned int mfreq, vector<InterruptInvocation*> interrupts, unsigned int ifreq) {
 	startMode = m;
 	allTheSwitches = switches;
 	currentMode = m;
-	ModeSwitchFrequency = f;
+	ModeSwitchFrequency = mfreq;
 	int period = (int)1000/ModeSwitchFrequency;
 	std::chrono::milliseconds ms(period);
 	modeSwitchPeriod = ms;
 	myInterrupts = interrupts;
+	InterruptFrequency = mfreq;
+	int iperiod = (int)1000/InterruptFrequency;
+	std::chrono::milliseconds msi(iperiod);
+	interruptPeriod = msi;
 }
 
 void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
@@ -123,6 +124,7 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 	currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startRun);
 	lastModeSwitch = startRun;
 	currentMode = startMode; 
+	lastInterruptTime = startRun;
 	Mode* nextMode;
 	enabledTasks = currentMode->getScheduledTasks();
 	PrepareSchedule mySchedule = PrepareSchedule(enabledTasks, startRun);
@@ -158,7 +160,8 @@ void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
 		}
 		else
 			updateModeTime();
-		checkForInterrupts();
+		if(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastInterruptTime)>= interruptPeriod)
+			checkForInterrupts();
 		advanceTime();
 	}
 }
@@ -204,6 +207,8 @@ void GiottoDirector::checkForInterrupts(){
 	{
 		if(myInterrupts[i]->getGuard()->Check())
 			myInterrupts[i]->getInterrupt()->getDirector()->Run();
+		
 	}
+	lastInterruptTime = chrono::system_clock::now();
 	return;
 }

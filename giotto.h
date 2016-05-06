@@ -74,6 +74,8 @@ private:
 // 	unsigned int frequency;
 // 	Guard myGuard;
 // };
+
+
 class Interrupt{
 public:
 	Interrupt(string, PtidesDirector*);
@@ -85,19 +87,18 @@ private:
 	string myName;
 	PtidesDirector* myPtidesDirector;
 };
+
+
 class InterruptInvocation{
 public:
-	InterruptInvocation(Interrupt*, Guard*, unsigned int, unsigned int);
+	InterruptInvocation(Interrupt*, Guard*, unsigned int);
 	Guard* getGuard(){return myGuard;};
 	Interrupt* getInterrupt(){return myInterrupt;};
 	unsigned int getPriority(){return priority;};
-	chrono::milliseconds getPeriod(){return period;};
 private:
 	Interrupt* myInterrupt;
 	Guard* myGuard;
 	unsigned int priority;
-	chrono::milliseconds period;
-
 };
 
 class Mode{
@@ -126,7 +127,7 @@ private:
 
 class GiottoDirector{
 public:
-	GiottoDirector(Mode*, vector<ModeSwitch*>, unsigned int, vector<InterruptInvocation*>);
+	GiottoDirector(Mode*, vector<ModeSwitch*>, unsigned int, vector<InterruptInvocation*>, unsigned int);
 	void Run(std::chrono::milliseconds);
 	vector<SchedulerTask*> GetEnabledTaskList() {return enabledTasks;};
 	vector<SchedulerTask*> GetActiveTaskList() {return activeTasks;};
@@ -138,15 +139,18 @@ private:
 	Mode* startMode;
 	Mode* currentMode;
 	unsigned int ModeSwitchFrequency;
+	unsigned int InterruptFrequency;
 	vector<SchedulerTask*> enabledTasks;
 	vector<SchedulerTask*> activeTasks;
 	vector<ModeSwitch*> allTheSwitches;
 	vector<InterruptInvocation*> myInterrupts;
 	std::chrono::system_clock::time_point startRun;
 	std::chrono::system_clock::time_point lastModeSwitch;
+	std::chrono::system_clock::time_point lastInterruptTime;
 	std::chrono::milliseconds modeTime;
 	std::chrono::milliseconds currentTime;
 	std::chrono::milliseconds modeSwitchPeriod;
+	std::chrono::milliseconds interruptPeriod;
 	void invokeNextTask();
 	Mode* checkNextMode();
 	void updateModeTime();
