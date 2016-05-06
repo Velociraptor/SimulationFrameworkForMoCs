@@ -159,4 +159,6 @@ private:
 	void checkForInterrupts();
 };
 
+bool sortInterruptsByPriority (InterruptInvocation* lhs, InterruptInvocation* rhs);
+
 #endif

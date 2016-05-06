@@ -104,6 +104,8 @@ InterruptInvocation::InterruptInvocation(Interrupt* i, Guard* g, unsigned int p)
 	priority = p;
 }
 
+bool sortInterruptsByPriority (InterruptInvocation* lhs, InterruptInvocation* rhs) {return lhs->getPriority() < rhs->getPriority();}
+
 GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned int mfreq, vector<InterruptInvocation*> interrupts, unsigned int ifreq) {
 	startMode = m;
 	allTheSwitches = switches;
@@ -120,6 +122,7 @@ GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned i
 }
 
 void GiottoDirector::Run(std::chrono::milliseconds maxRunTime) {
+	sort(myInterrupts.begin(), myInterrupts.end(), sortInterruptsByPriority);
 	startRun = std::chrono::system_clock::now();
 	currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - startRun);
 	lastModeSwitch = startRun;

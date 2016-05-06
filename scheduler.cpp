@@ -64,6 +64,8 @@ vector<SchedulerTask*> getSchedule(vector<SchedulerTask*> unorderedTasks){
 	return unorderedTasks;
 }
 
+bool sortByPeriod (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPeriod() < rhs->getPeriod(); }
+bool sortByPriority (SchedulerTask *lhs, SchedulerTask *rhs) { return lhs->getPriority() < rhs->getPriority(); }
 // Testing
 
 
