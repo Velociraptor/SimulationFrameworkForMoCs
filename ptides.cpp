@@ -27,15 +27,20 @@ Network::Network(string name, Platform* p1, Platform* p2, chrono::milliseconds d
 }
 
 PtidesDirector::PtidesDirector(Platform* p, vector<Network*> n, chrono::milliseconds ts){
-	firstPlatforms = p;
+	firstPlatform = p;
+	currentPlatform = p;
 	allNetworks = n;
 	TimeStamp = ts;
 }
 
 void PtidesDirector::Run(){
-	for (int i = 0; i < firstPlatforms->getTasks().size(); ++i)
-		{
-			/* code */
+	running = true;
+	while(running){
+		for (int i = 0; i < currentPlatform->getTasks().size(); ++i)
+			{
+				currentPlatform->getTasks()[i]->getActor()->Compute();
+				TimeStamp+=currentPlatform->getTasks()[i]->getDelay();
+			}
+		//findNextPlatform();
 		}
-	//findNextPlatform();
 }

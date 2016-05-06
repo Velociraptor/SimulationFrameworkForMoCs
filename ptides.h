@@ -16,7 +16,6 @@ public:
 	string getName(){return myName;};
 	Actor* getActor(){return myActor;};
 	chrono::milliseconds getDelay(){return myDelay;};
-
 private:
 	string myName;
 	Actor *myActor;
@@ -54,7 +53,9 @@ public:
 	PtidesDirector(Platform*, vector<Network*>, chrono::milliseconds);
 	void Run();
 private:
-	Platform* firstPlatforms;
+	bool running;
+	Platform* firstPlatform;
+	Platform* currentPlatform;
 	vector<Network*> allNetworks;
 	chrono::milliseconds TimeStamp; //What is the type for TimeStamp???? maybe a long??
 };
