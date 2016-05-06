@@ -6,6 +6,26 @@
 
 using namespace std;
 
+/* 
+Actor Model
+
+Uma Balakrishnan and Hannah Sarver
+EE 249B Embedded Systems Spring 2016
+
+Implementations for Port and Actor classes to be
+used in any simulation with any model of computation
+built upon this platform. 
+
+Ports can currently be
+generated with any of four types, and their values
+retrieved by specified type.
+
+Derived Actors must specify a Run method that may
+use their input port values to determine new values
+to apply to their output ports. Actors will be used
+within simulations for any model of computation.
+*/
+
 typedef enum PortType{ BOOL, INT, FLOAT, DOUBLE } PortType;
 
 typedef union PortValue{
@@ -78,7 +98,9 @@ public:
 	AccumulatorWithReset(string, vector<Port*>, vector<Port*>);
 	string ActorType();
 	void Compute();
-	// void Reset();
+private:
+	int internalSum;
+	void Reset();
 };
 
 // difference

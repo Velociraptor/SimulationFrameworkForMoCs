@@ -44,6 +44,7 @@ void PtidesDirector::FindNextPlatform() {
 			// found next platform, set as current and update timestamp with network delay
 			TimeStamp += nextNetwork->getDelay();
 			currentPlatform = nextNetwork->getDestPlatform();
+			cout << "Crossing network to Platform " << currentPlatform->getName() << endl;
 			return;
 		}
 	}
@@ -55,8 +56,9 @@ void PtidesDirector::Run(){
 	running = true;
 	std::chrono::milliseconds m(0);
 	TimeStamp = m;
+	cout << "PTIDES starting to run on Platform " << currentPlatform->getName() << endl;
 	while(running){
-		for (int i = 0; i < currentPlatform->getTasks().size(); ++i)
+		for (unsigned int i = 0; i < currentPlatform->getTasks().size(); ++i)
 			{
 				currentPlatform->getTasks()[i]->getActor()->Compute();
 				TimeStamp+=currentPlatform->getTasks()[i]->getDelay();

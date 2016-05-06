@@ -4,12 +4,37 @@
 #include <vector>
 #include <string>
 #include <chrono>
+#include <algorithm>
 #include <ctime>
 #include "scheduler.h"
 #include "actors.h"
 #include "ptides.h"
 
 using namespace std;
+
+/* 
+Giotto Model of Computation
+
+Uma Balakrishnan and Hannah Sarver
+EE 249B Embedded Systems Spring 2016
+
+Basic Giotto class design based on the 
+Giotto model of computation as presented in:
+ https://www.hh.se/download/18.70cf2e49129168da0158000145742/henzinger-giotto-time-triggered.pdf
+
+Primary components include Tasks which are
+included in periodic TaskInvocations, which are in
+turn incorporated into Modes of operation
+that the Director runs through continuously,
+running tasks according to their periods
+(as scheduled by our external MoC-agnostic periodic Scheduler).
+The Director also handles Mode switching, based on checking Guards.
+Additionally, we have introduced a concept of
+Interrupts that can be checked within Giotto's periodic-based
+Director and kick off an internal event-based MoC execution
+(for instance PTIDES).
+*/
+
 
 // Actors are encapsulated in Tasks
 class Task{
