@@ -57,7 +57,7 @@ private:
 	Platform* firstPlatform;
 	Platform* currentPlatform;
 	vector<Network*> allNetworks;
-	chrono::milliseconds TimeStamp; //What is the type for TimeStamp???? maybe a long??
+	chrono::milliseconds TimeStamp;
 };
 
 #endif

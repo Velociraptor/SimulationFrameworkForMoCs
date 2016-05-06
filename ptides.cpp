@@ -31,6 +31,24 @@ PtidesDirector::PtidesDirector(Platform* p, vector<Network*> n, chrono::millisec
 	currentPlatform = p;
 	allNetworks = n;
 	TimeStamp = ts;
+	running = false;
+}
+
+// Iterate through networks to find current platform
+// as source and set next platform (if any - else set running to false)
+void PtidesDirector::FindNextPlatform() {
+	Network *nextNetwork;
+	for (int i=0;i<networks.size();i++) {
+		nextNetwork = networks[i];
+		if (nextNetwork->getSrcPlatform()->getName().equals(currentPlatform->getName())) {
+			// found next platform, set as current and update timestamp with network delay
+			TimeStamp += nextNetwork->getDelay();
+			currentPlatform = nextNetwork->getDstPlatform();
+			return;
+		}
+	}
+	// no next platform found across any network, set running to false
+	running = false;
 }
 
 void PtidesDirector::Run(){
@@ -41,6 +59,7 @@ void PtidesDirector::Run(){
 				currentPlatform->getTasks()[i]->getActor()->Compute();
 				TimeStamp+=currentPlatform->getTasks()[i]->getDelay();
 			}
-		//findNextPlatform();
-		}
+		FindNextPlatform();
+	}
+	cout << "PTIDES run completed in " << TimeStamp << " ms" << endl;
 }
