@@ -33,6 +33,14 @@ bool Guard::Check() {
 	return GuardFunction(myPorts);
 }
 
+//Constructor for ModeSwitch
+ModeSwitch::ModeSwitch(Guard* g, Mode* from, Mode* to){
+	myGuard = g;
+	srcMode = from;
+	destMode = to;
+}
+
+
 // Contstructor for Mode
 Mode::Mode(string nameIn, vector<TaskInvocation*> t) {
 	name = nameIn;

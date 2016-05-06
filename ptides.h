@@ -45,7 +45,7 @@ private:
 
 class Platform{
 public:
-	Platform(string, vector<PTask*>, unsigned int); //What is the type of platformClockTime????
+	Platform(string, vector<PTask*>, unsigned int);
 	string getName(){return myName;};
 	vector<PTask*> getTasks(){return myTasks;};
 	unsigned int getClockTime(){return myClockTime;};
