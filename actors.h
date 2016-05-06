@@ -78,7 +78,9 @@ public:
 	AccumulatorWithReset(string, vector<Port*>, vector<Port*>);
 	string ActorType();
 	void Compute();
-	// void Reset();
+private:
+	int internalSum;
+	void Reset();
 };
 
 // difference

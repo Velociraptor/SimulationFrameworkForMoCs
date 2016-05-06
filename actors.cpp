@@ -1,16 +1,17 @@
 #include "actors.h"
 #include <iostream>
-// #include <chrono>
 #include <time.h>
 #include <stdlib.h>
 using namespace std;
 
-// Port constructors
+// Port constructor
 Port::Port (string name, PortContents portInit) {
 	cout << "Creating Port " << name << endl;
 	myName = name;
 	myContents = portInit;
 }
+
+// Port value changes - called by actors
 
 void Port::SetValueBool(bool b){
 	cout << "    Port " << myName << " new bool value: " << b << endl;
@@ -32,7 +33,7 @@ void Port::SetValueDouble(double d){
 	myContents.portValue.valDouble = double(d);
 }
 
-// Actor constructor
+// Base Actor constructor
 Actor::Actor (string name, vector<Port*> inputPorts, 
 	vector<Port*> outputPorts) {
 	cout << "Creating Actor " << name << endl;
@@ -43,9 +44,13 @@ Actor::Actor (string name, vector<Port*> inputPorts,
 
 // Derived Actor class definitions
 
-// Constructor: call base class constructor and warn on unexpected port vector sizes
-// expected input ports: 2 - numeric
-// expected output ports: 1 - bool
+/* 
+ComparatorGreater - Sets boolean output true if first input is greater
+	than second (expected same numeric type), else false
+Constructor: call base class constructor and warn on unexpected port vector sizes
+Expected input ports: 2 - numeric
+Expected output ports: 1 - bool
+*/
 ComparatorGreater::ComparatorGreater(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
 	if (inputPorts.size() != 2) {
@@ -61,8 +66,8 @@ string ComparatorGreater::ActorType () {
 	return "ComparatorGreater";
 }
 
-// Perform computation to set output port value
-// based on current input port values
+/* Perform computation to set output port value
+based on current input port values */
 void ComparatorGreater::Compute () {
 	cout << "  Actor " << Name() << " computing" << endl;
 	bool output = false;
@@ -103,9 +108,12 @@ void ComparatorGreater::Compute () {
 	myOutputs[0]->SetValueBool(output);
 }
 
-// Constructor: call base class constructor and warn on unexpected port vector sizes
-// expected input ports: 1 - numeric (top of range, from zero)
-// expected output ports: 1 - int
+/*
+RandomIntInRange - generate a rand integer within range of zero to given max
+Constructor: call base class constructor and warn on unexpected port vector sizes
+Expected input ports: 1 - numeric (top of range, from zero)
+Expected output ports: 1 - int
+*/
 RandomIntInRange::RandomIntInRange(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
 	if (inputPorts.size() != 1) {
@@ -121,8 +129,8 @@ string RandomIntInRange::ActorType () {
 	return "RandomIntInRange";
 }
 
-// Perform computation to set output port value
-// based on current input port values
+/* Perform computation to set output port value
+based on current input port values */
 void RandomIntInRange::Compute () {
 	cout << "  Actor " << Name() << " computing" << endl;
 	int rangeBottom = 0;
@@ -131,9 +139,12 @@ void RandomIntInRange::Compute () {
 	myOutputs[0]->SetValueInt(output);
 }
 
-// Constructor: call base class constructor and warn on unexpected port vector sizes
-// expected input ports: 2 - numeric and bool (for reset flag)
-// expected output ports: 1 - numeric (current accumulation)
+/*
+AccumulatorWithReset - Add input to 
+Constructor: call base class constructor and warn on unexpected port vector sizes
+Expected input ports: 2 - numeric and bool (for reset flag)
+Expected output ports: 1 - numeric (current accumulation)
+*/
 AccumulatorWithReset::AccumulatorWithReset(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
 	if (inputPorts.size() != 2) {
@@ -142,6 +153,7 @@ AccumulatorWithReset::AccumulatorWithReset(string s, vector<Port*> inputPorts,
 	if (outputPorts.size() != 1) {
 		cout << "Warning: AccumulatorWithReset Actor received unexpected number of output ports." << endl;
 	}
+	internalSum = 0;
 }
 
 // Return actor type
@@ -149,35 +161,39 @@ string AccumulatorWithReset::ActorType () {
 	return "AccumulatorWithReset";
 }
 
-// Perform computation to set output port value
-// based on current input port values
+/* Perform computation to set output port value
+based on current input port values */
 void AccumulatorWithReset::Compute () {
 	cout << "  Actor " << Name() << " computing" << endl;
-	// check reset and set output to zero if appropriate
-	// (and set reset port back to false) 
+	// check reset and act as appropriate
 	bool reset = myInputs[1]->GetValueBool();
 	if (reset) {
-		cout << "   Accumulator Actor " << Name() << " resetting" << endl;
-		myOutputs[0]->SetValueInt(0);
-		myInputs[1]->SetValueBool(false);
+		Reset();
 	} else {
-		// no reset, add value and set input to zero
+		// no reset; add value and set input to zero
 		int inputAdd = myInputs[0]->GetValueInt();
-		int prevOut = myOutputs[0]->GetValueInt();
-		myOutputs[0]->SetValueInt(prevOut + inputAdd);
+		internalSum += inputAdd;
+		myOutputs[0]->SetValueInt(internalSum);
 		cout << "   Accumulator Actor " << Name() << " clearing input" << endl;
 		myInputs[0]->SetValueInt(0);
 	}
 }
 
-// // Set reset input port high to trigger reset on next Compute()
-// void AccumulatorWithReset::Reset () {
-// 	myInputs[1]->SetValueBool(true);
-// }
+// Set output to zero (and set reset port back to false) 
+void AccumulatorWithReset::Reset () {
+	cout << "   Accumulator Actor " << Name() << " resetting" << endl;
+	internalSum = 0;
+	myOutputs[0]->SetValueInt(internalSum);
+	myInputs[1]->SetValueBool(false);
+}
 
-// Constructor: call base class constructor and warn on unexpected port vector sizes
-// expected input ports: 2 - numeric
-// expected output ports: 1 - numeric
+/*
+Difference - Subtract second input from first, 
+	currently both assumed integers
+Constructor: call base class constructor and warn on unexpected port vector sizes
+expected input ports: 2 - numeric
+expected output ports: 1 - numeric
+*/
 Difference::Difference(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
 	if (inputPorts.size() != 2) {
@@ -193,17 +209,20 @@ string Difference::ActorType () {
 	return "Difference";
 }
 
-// Perform computation to set output port value
-// based on current input port values
+/* Perform computation to set output port value
+based on current input port values */
 void Difference::Compute () {
 	cout << "  Actor " << Name() << " computing" << endl;
 	int diff = myInputs[0]->GetValueInt() - myInputs[1]->GetValueInt();
 	myOutputs[0]->SetValueInt(diff);
 }
 
-// Constructor: call base class constructor and warn on unexpected port vector sizes
-// expected input ports: none
-// expected output ports: 1 - bool (true when triggered)
+/*
+Trigger - compute function sets output to true, to trigger a subsequent actor
+Constructor: call base class constructor and warn on unexpected port vector sizes
+expected input ports: none
+expected output ports: 1 - bool (true when triggered)
+*/
 Trigger::Trigger(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
 	if (inputPorts.size() != 0) {
@@ -225,9 +244,12 @@ void Trigger::Compute () {
 	myOutputs[0]->SetValueBool(true);
 }
 
-// Constructor: call base class constructor and warn on unexpected port vector sizes
-// expected input ports: 2 - numeric (threshold and current value)
-// expected output ports: 1 - bool (true when triggered)
+/*
+ThresholdTrigger - set output to true if input exceeds specified threshold
+Constructor: call base class constructor and warn on unexpected port vector sizes
+expected input ports: 2 - numeric (threshold and current value)
+expected output ports: 1 - bool (true when triggered)
+*/
 ThresholdTrigger::ThresholdTrigger(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
 	if (inputPorts.size() != 2) {
@@ -253,9 +275,12 @@ void ThresholdTrigger::Compute () {
 	}
 }
 
-// Parent constructor plus initially set internalStorage to zero
-// expected input ports: 1 - numeric
-// expected output ports: 1 - numeric (gives previous stored value)
+/*
+Register - store previous input internally and set as output on next Compute
+Parent constructor plus initially set internalStorage to zero
+expected input ports: 1 - numeric
+expected output ports: 1 - numeric (gives previous stored value)
+*/
 Register::Register (string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) :  Actor(s, inputPorts, outputPorts) {
 	if (inputPorts.size() != 1) {
@@ -279,9 +304,12 @@ void Register::Compute () {
 	internalStorage = myInputs[0]->GetValueInt();
 }
 
-// Constructor: call base class constructor and warn on unexpected port vector sizes
-// expected input ports: 2 - numeric (top of range, increment)
-// expected output ports: 1 - numeric
+/*
+RepeatingRamp - generate successive values in a range, reset on max
+Constructor: call base class constructor and warn on unexpected port vector sizes
+expected input ports: 2 - numeric (top of range, increment)
+expected output ports: 1 - numeric
+*/
 RepeatingRamp::RepeatingRamp(string s, vector<Port*> inputPorts, 
 		vector<Port*> outputPorts) : Actor(s, inputPorts, outputPorts) {
 	if (inputPorts.size() != 2) {
@@ -298,7 +326,7 @@ string RepeatingRamp::ActorType () {
 	return "RepeatingRamp";
 }
 
-// Set output port value to true
+// Set output port to subsequent value, or zero if at max
 void RepeatingRamp::Compute () {
 	cout << "  Actor " << Name() << " computing" << endl;
 	int increment = myInputs[1]->GetValueInt();
