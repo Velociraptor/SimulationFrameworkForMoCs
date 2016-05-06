@@ -4,6 +4,26 @@
 #include "actors.h"
 #include "scheduler.h"
 
+/* 
+PTIDES Windshield Wiper Simulation
+
+Uma Balakrishnan and Hannah Sarver
+EE 249B Embedded Systems Spring 2016
+
+Overall simulation using our Actor model,
+periodic Scheduler, and very basic PTIDES
+class implementation based on the model
+of computation presented in:
+ https://chess.eecs.berkeley.edu/pubs/529/RTASPtides-1.pdf
+with wrapper Giotto director providing a periodic
+trigger of rain generation to kick off
+event-based PTIDES execution.
+
+This simple test system includes separate platforms 
+for sensing and actuation with data transferred
+across a network (represented by a logical time delay).
+*/
+
 int main() {
 	cout << "Windshield Simulation Program for EE249B Project" << endl;
 

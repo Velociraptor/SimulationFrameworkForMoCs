@@ -4,6 +4,23 @@
 #include "actors.h"
 #include "scheduler.h"
 
+/* 
+Giotto Windshield Wiper Simulation
+
+Uma Balakrishnan and Hannah Sarver
+EE 249B Embedded Systems Spring 2016
+
+Overall simulation using our Actor model,
+periodic Scheduler, and basic Giotto class
+design based on the Giotto model of computation
+as presented in:
+ https://www.hh.se/download/18.70cf2e49129168da0158000145742/henzinger-giotto-time-triggered.pdf
+
+Splits execution into Low, Medium, and High Rain Modes
+dictating the frequency of wiper passes based on rate
+of sensed rainfall.
+*/
+
 // Define guard functions for mode switching
 bool rainRateLow (vector<Port*> p) {
 	// rainfall low from latest check
@@ -39,7 +56,7 @@ int main() {
 	// Giotto simulation
 	cout << "Starting Simulation Using Giotto" << endl;
 
-	// // Weather Model simulates rainfall as a random int per [unit time]
+	// // [Alternate] Random Weather Model simulates rainfall as a random int per [unit time]
 	// // input port: range of rain creation
 	// srand((unsigned)time(NULL));
 	// PortValue pvRainGenRange;
@@ -58,7 +75,7 @@ int main() {
 	// // Initialize weather model actor
 	// RandomIntInRange *weatherModel = new RandomIntInRange(string("WeatherModel"), vipRainGen, vopRainGen);
 
-	// Alternate Weather Model simulates rainfall as a repeating ramp from 0 to 100
+	// Ramping Weather Model simulates rainfall as a repeating ramp from 0 to 100
 	// input ports: range of rain creation, increment	PortValue pvRainGenRange;
 	PortValue pvRainGenRange;
 	pvRainGenRange.valInt = 100;
@@ -170,8 +187,8 @@ int main() {
 	highRainTaskList.push_back(storeRainInvoke);
 	highRainTaskList.push_back(rainRateInvoke);
 
-	// Wiper actuation based on operating mode
-	// (wiper action is to reset sensor accumulator by triggering reset port)
+	/* Wiper actuation based on operating mode
+	(wiper action is to reset sensor accumulator by triggering reset port) */
 	// no input port, just triggers whenever Compute() called
 	vector<Port*> vipWiper;
 	// output port: reset input to sensor accumulator
@@ -201,9 +218,9 @@ int main() {
 	Mode *medRainMode = new Mode(string("medRainMode"), medRainTaskList);
 	Mode *highRainMode = new Mode(string("highRainMode"), highRainTaskList);
 
-	// Mode switches to each possible destination mode from each possible start,
-	// with appropriate Guards calling functions above with correct port for rain rate
-	// and a frequency as often as we want to be able to switch modes (set in director)
+	/* Mode switches to each possible destination mode from each possible start,
+	with appropriate Guards calling functions above with correct port for rain rate
+	and a frequency as often as we want to be able to switch modes (set in director) */
 	vector<Port*> pvGuard;
 	pvGuard.push_back(rainfallRate);
 	Guard *lowRainGuard = new Guard(string("lowRainGuard"), rainRateLow, pvGuard);

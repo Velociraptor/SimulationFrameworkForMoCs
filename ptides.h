@@ -10,6 +10,27 @@
 
 using namespace std;
 
+/* 
+PTIDES Model of Computation
+
+Uma Balakrishnan and Hannah Sarver
+EE 249B Embedded Systems Spring 2016
+
+Very basic PTIDES class implementation based on the model
+of computation presented in:
+ https://chess.eecs.berkeley.edu/pubs/529/RTASPtides-1.pdf
+
+Primary components include PTasks with Actors and logical time
+delays which are included in Platforms that dictate linear
+execution for the Director. When the PTasks in the current
+Platform have been exhausted, the Director will check the
+Networks provided for a transition away from that Platform
+and then execute the PTasks in the destination Platform.
+When all Platforms' PTasks have been completed, execution returns
+to the external triggering environment, such as a periodic Director
+(ie Giotto).
+*/
+
 class PTask{
 public:
 	PTask(string, Actor*, chrono::milliseconds);
