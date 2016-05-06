@@ -203,7 +203,7 @@ std::chrono::milliseconds GiottoDirector::getModeSwitchPeriod(){
 }
 
 void GiottoDirector::checkForInterrupts(){
-	for (int i = 0; i < myInterrupts.size(); ++i)
+	for (unsigned int i = 0; i < myInterrupts.size(); ++i)
 	{
 		if(myInterrupts[i]->getGuard()->Check())
 			myInterrupts[i]->getInterrupt()->getDirector()->Run();

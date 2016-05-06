@@ -39,7 +39,7 @@ public:
 	Network(string, Platform*, Platform*, chrono::milliseconds);
 	string getName(){return myName;};
 	Platform* getSrcPlatform(){return srcPlatform;};
-	Platform* getDestplatform(){return destPlatform;};
+	Platform* getDestPlatform(){return destPlatform;};
 	chrono::milliseconds getDelay(){return myDelay;};
 private:
 	string myName;
@@ -51,6 +51,7 @@ private:
 class PtidesDirector{
 public:
 	PtidesDirector(Platform*, vector<Network*>, chrono::milliseconds);
+	void FindNextPlatform();
 	void Run();
 private:
 	bool running;
