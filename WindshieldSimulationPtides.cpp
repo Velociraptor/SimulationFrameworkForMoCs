@@ -142,7 +142,7 @@ int main() {
 	vector<ModeSwitch*> noModeSwitches;
 	unsigned int noModeSwitchCheckFreq = 1;
 	GiottoDirector giottoWrapperD = GiottoDirector(wrapperMode, noModeSwitches, noModeSwitchCheckFreq, giottoInterrupts, rainIntFreq);
-	std::chrono::milliseconds m(10000);
+	std::chrono::milliseconds m(1000);
 	giottoWrapperD.Run(m);
 
 	return 0;
