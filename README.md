@@ -1,7 +1,7 @@
 # SuperFunPartyMoCs
-EE249B Project to implement Giotto and PTIDES Models of Computation in C++
-Uma Balakrishnan and Hannah Sarver
-EE 249B Embedded Systems Spring 2016
+EE249B Project to implement Giotto and PTIDES Models of Computation in C++  
+Uma Balakrishnan and Hannah Sarver  
+EE 249B Embedded Systems Spring 2016  
 
 # Files
 windshieldsim.makefile - Make all the things!  
