@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <chrono>
+#include <algorithm>
 #include <ctime>
 #include "scheduler.h"
 #include "actors.h"
