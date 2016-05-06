@@ -3,6 +3,7 @@
 #include <string>
 #include <chrono>
 #include <ctime>
+#include <algorithm>
 #include "giotto.h"
 #include "scheduler.h"
 #include "actors.h"
@@ -115,7 +116,7 @@ GiottoDirector::GiottoDirector(Mode* m, vector<ModeSwitch*> switches, unsigned i
 	std::chrono::milliseconds ms(period);
 	modeSwitchPeriod = ms;
 	myInterrupts = interrupts;
-	InterruptFrequency = mfreq;
+	InterruptFrequency = ifreq;
 	int iperiod = (int)1000/InterruptFrequency;
 	std::chrono::milliseconds msi(iperiod);
 	interruptPeriod = msi;
