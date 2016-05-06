@@ -11,42 +11,43 @@
 
 using namespace std;
 
+// Actors are encapsulated in Tasks
 class Task{
 public:
 	Task(string, Actor*);
 	string getName(){return name;};
 	Actor* getActor(){return myActor;};
 private:
-	string name;
-	Actor* myActor;
+	string name; //Task name
+	Actor* myActor; //Actor associated with Task
 };
 
-// Define trivially true guard
+// Function that serves as a guard that always evaluates to true
 bool trivialTrueGuard (vector<Port*>);
 
 class Guard{
 public:
 	Guard(string, bool (*f)(vector<Port*>), vector<Port*> );
-	bool Check();
+	bool Check(); //This funciton encapsulates the private guard function
 private:
-	string name;
-	bool (*GuardFunction)(vector<Port*>);
-	vector<Port*> myPorts;
+	string name; // Guard name
+	bool (*GuardFunction)(vector<Port*>); // The guard function that takes a vector of ports as an argument and evaluates to true or false
+	vector<Port*> myPorts; //The vector of ports used by the guard function
 };
 
 class TaskInvocation{
 public:
-	TaskInvocation(Task*, Guard*, unsigned int, unsigned int);
+	TaskInvocation(Task*, Guard*, unsigned int, unsigned int); 
 	void SetFrequency (unsigned int);
 	SchedulerTask* getSchedulerTask(){return mySchedTask;};
 	Task* getTask(){return myTask;}
 	std::chrono::milliseconds getPeriod();
 	unsigned int getPriority(){return priority;};
 private:
-	unsigned int frequency;
-	unsigned int priority;
-	Task *myTask;
-	Guard *myGuard;
+	unsigned int frequency; //Frequency at which the Task needs to be invoked
+	unsigned int priority; // Priority of the task
+	Task *myTask; 
+	Guard *myGuard; //The guard which decides whether the task must be invoked
 	SchedulerTask *mySchedTask;
 };
 
@@ -56,36 +57,29 @@ class Mode;
 
 class ModeSwitch{
 public:
-	ModeSwitch(Guard*, Mode* ,Mode*);
+	ModeSwitch(Guard*, Mode*, Mode*);
 	Mode* getSource(){return srcMode;};
 	Mode* getDest(){return destMode;};
 	Guard* getGuard(){return myGuard;};
 private:
-	Mode* srcMode;
-	Mode* destMode;
-	Guard* myGuard;
+	Mode* srcMode; // Source Mode
+	Mode* destMode; // Destination Mode
+	Guard* myGuard; //Guard which decides whether the mode must be switched
 };
-
-// class ActuatorUpdate{
-// public:
-// 	ActuatorUpdate(Guard, unsigned int);
-// 	void SetFrequency (unsigned int);
-// private:
-// 	unsigned int frequency;
-// 	Guard myGuard;
-// };
-
 
 class Interrupt{
 public:
 	Interrupt(string, PtidesDirector*);
-	//Interrupt(string, SDFDirector*);
+	//Interrupt(string, SDFDirector*);  //Could have a number of constructors depending on the type of event based interrupt
 	PtidesDirector* getDirector(){return myPtidesDirector;};
-	string getName(){return myName;};
 	//SDFDirector* getDirector(){return mySDFDirector;};
+	string getName(){return myName;};
 private:
-	string myName;
-	PtidesDirector* myPtidesDirector;
+	string myName; //Name of the interrupt
+
+	//Provide member directors for any number of event-based MoCs
+	PtidesDirector* myPtidesDirector; 
+	//SDF Director* mySDF Director;
 };
 
 
@@ -96,9 +90,9 @@ public:
 	Interrupt* getInterrupt(){return myInterrupt;};
 	unsigned int getPriority(){return priority;};
 private:
-	Interrupt* myInterrupt;
-	Guard* myGuard;
-	unsigned int priority;
+	Interrupt* myInterrupt; 
+	Guard* myGuard; //Guard which decides if the interrrupt should be invoked
+	unsigned int priority; //Priority of the interrupt
 };
 
 class Mode{
@@ -109,22 +103,12 @@ public:
 	string getName(){return name;};
 	vector<TaskInvocation*> getInvokes(){return invokes;};
 private:
-	string name;
-	vector<TaskInvocation*> invokes;
-	vector<SchedulerTask*> schedTasks;
-	// vector<ActuatorUpdate*> updates;
+	string name; //Mode name
+	vector<TaskInvocation*> invokes; //Set of task invocations in this mode
+	vector<SchedulerTask*> schedTasks; //Set of scheduler tasks corresponding to the invokes in the mode
 };
 
-// class Config{
-// public:
-// 	Config( Mode);
-// private:
-// 	Mode myMode;
-// 	std::chrono::milliseconds ModeTime;
-// 	std::chrono::milliseconds TimeStamp;
-// 	vector<SchedulerTask*> ActiveTasks;
-// };
-
+// Giotto Director class contains the information about the simulation needed by the MoC
 class GiottoDirector{
 public:
 	GiottoDirector(Mode*, vector<ModeSwitch*>, unsigned int, vector<InterruptInvocation*>, unsigned int);
@@ -135,22 +119,21 @@ public:
 	std::chrono::milliseconds getModeSwitchPeriod();
 
 private:
-
-	Mode* startMode;
+	Mode* startMode; 
 	Mode* currentMode;
-	unsigned int ModeSwitchFrequency;
-	unsigned int InterruptFrequency;
-	vector<SchedulerTask*> enabledTasks;
-	vector<SchedulerTask*> activeTasks;
-	vector<ModeSwitch*> allTheSwitches;
-	vector<InterruptInvocation*> myInterrupts;
-	std::chrono::system_clock::time_point startRun;
-	std::chrono::system_clock::time_point lastModeSwitch;
-	std::chrono::system_clock::time_point lastInterruptTime;
-	std::chrono::milliseconds modeTime;
-	std::chrono::milliseconds currentTime;
-	std::chrono::milliseconds modeSwitchPeriod;
-	std::chrono::milliseconds interruptPeriod;
+	unsigned int ModeSwitchFrequency; // How often we need to check if the mode must be updated
+	unsigned int InterruptFrequency; // How often we need to check if an interrupt must be invoked
+	vector<SchedulerTask*> enabledTasks; // List of currently enabled tasks
+	vector<SchedulerTask*> activeTasks; // List of currently active tasks
+	vector<ModeSwitch*> allTheSwitches; // List of all the possible mode switches
+	vector<InterruptInvocation*> myInterrupts; // List of all possible interrupt that may need to be called
+	std::chrono::system_clock::time_point startRun; // Time at which the simulation started
+	std::chrono::system_clock::time_point lastModeSwitch; // Time at which the last checked if the mode needs to be switched
+	std::chrono::system_clock::time_point lastInterruptTime; // Time at which the last interrupt check happened
+	std::chrono::milliseconds modeTime; // Time since last mode switch check
+	std::chrono::milliseconds currentTime; // Time since the start of the simulation
+	std::chrono::milliseconds modeSwitchPeriod; // How often we need to check if the mode must be updated
+	std::chrono::milliseconds interruptPeriod; // How often we need to check if an interrupt must be invoke
 	void invokeNextTask();
 	Mode* checkNextMode();
 	void updateModeTime();
@@ -159,6 +142,6 @@ private:
 	void checkForInterrupts();
 };
 
-bool sortInterruptsByPriority (InterruptInvocation* lhs, InterruptInvocation* rhs);
+bool sortInterruptsByPriority (InterruptInvocation* lhs, InterruptInvocation* rhs); 
 
 #endif
