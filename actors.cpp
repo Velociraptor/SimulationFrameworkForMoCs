@@ -1,5 +1,6 @@
 #include "actors.h"
 #include <iostream>
+#include <fstream>
 #include <time.h>
 #include <stdlib.h>
 using namespace std;
@@ -21,6 +22,10 @@ void Port::SetValueBool(bool b){
 void Port::SetValueInt(int i){
 	cout << "    Port " << myName << " new int value: " << i << endl;
 	myContents.portValue.valInt = int(i);
+	ofstream fileOut;
+	fileOut.open("output.txt", std::ios_base::app);
+	fileOut << myName << "," << i << endl;
+	fileOut.close();
 }
 
 void Port::SetValueFloat(float f){

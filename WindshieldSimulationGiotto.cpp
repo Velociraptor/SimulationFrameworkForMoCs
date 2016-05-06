@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "giotto.h"
 #include "ptides.h"
 #include "actors.h"
@@ -103,7 +104,7 @@ int main() {
 	// Empty port vector for empty guards
 	vector<Port*> trivialPV;
 	Guard *rainGuard = new Guard(string("RainGuard"), trivialTrueGuard, trivialPV);
-	unsigned int rainGenFreq = 200;
+	unsigned int rainGenFreq = 100;
 	unsigned int rainGenPriority = 1;
 	TaskInvocation *genRainInvoke = new TaskInvocation(generateRainfall, rainGuard, rainGenFreq, rainGenPriority);
 
@@ -127,7 +128,7 @@ int main() {
 	AccumulatorWithReset *rainfallSensor = new AccumulatorWithReset(string("RainfallSensor"), vipRainSense, vopRainSense);
 	Task *senseRainfall = new Task(string("SenseTheRain"), rainfallSensor);
 	Guard *sensorGuard = new Guard(string("SensorGuard"), trivialTrueGuard, trivialPV);
-	unsigned int rainSenseFreq = 200;
+	unsigned int rainSenseFreq = 100;
 	unsigned int rainSensePriority = 2;
 	TaskInvocation *senseRainInvoke = new TaskInvocation(senseRainfall, sensorGuard, rainSenseFreq, rainSensePriority);
 
@@ -146,7 +147,7 @@ int main() {
 	Register *prevRainRegister = new Register(string("PreviousRainRegister"), vipRainRegister, vopRainRegister);
 	Task *storeLatestRainfall = new Task(string("StoreLatestRain"), prevRainRegister);
 	Guard *rainRegGuard = new Guard(string("rainStoreGuard"), trivialTrueGuard, trivialPV);
-	unsigned int rainStoreFreq = 200;
+	unsigned int rainStoreFreq = 100;
 	unsigned int rainStorePriority = 3;
 	TaskInvocation *storeRainInvoke = new TaskInvocation(storeLatestRainfall, rainRegGuard, rainStoreFreq, rainStorePriority);
 	
@@ -166,7 +167,7 @@ int main() {
 	Difference *rainfallRateCheck = new Difference(string("RainfallRateCheck"),vipRainRate, vopRainRate);
 	Task *checkRainfallRate = new Task(string("CheckRainRate"), rainfallRateCheck);
 	Guard *rainRateGuard = new Guard(string("rainRateGuard"), trivialTrueGuard, trivialPV);
-	unsigned int rainRateCheckFreq = 200;
+	unsigned int rainRateCheckFreq = 100;
 	unsigned int rainRatePriority = 4;
 	TaskInvocation *rainRateInvoke = new TaskInvocation(checkRainfallRate, rainRateGuard, rainRateCheckFreq, rainRatePriority);
 
@@ -197,17 +198,17 @@ int main() {
 	// Initialize wiper actor
 	Trigger *wiper = new Trigger(string("wiper"), vipWiper, vopWiper);
 	Guard *wiperGuard = new Guard(string("WiperGuard"), trivialTrueGuard, trivialPV);
-	unsigned int lowWiperFreq = 25;
+	unsigned int lowWiperFreq = 15;
 	unsigned int lowWiperPriority = 10;
 	Task *actuateWiperLow = new Task(string("WipeItOffLow"), wiper);
 	TaskInvocation *lowWiperInvoke = new TaskInvocation(actuateWiperLow, wiperGuard, lowWiperFreq, lowWiperPriority);
 	lowRainTaskList.push_back(lowWiperInvoke);
-	unsigned int medWiperFreq = 50;
+	unsigned int medWiperFreq = 35;
 	unsigned int medWiperPriority = 10;
 	Task *actuateWiperMed = new Task(string("WipeItOffMed"), wiper);
 	TaskInvocation *medWiperInvoke = new TaskInvocation(actuateWiperMed, wiperGuard, medWiperFreq, medWiperPriority);
 	medRainTaskList.push_back(medWiperInvoke);
-	unsigned int highWiperFreq = 100;
+	unsigned int highWiperFreq = 50;
 	unsigned int highWiperPriority = 10;
 	Task *actuateWiperHigh = new Task(string("WipeItOffHigh"), wiper);
 	TaskInvocation *highWiperInvoke = new TaskInvocation(actuateWiperHigh, wiperGuard, highWiperFreq, highWiperPriority);
@@ -241,6 +242,11 @@ int main() {
 	rainModeSwitches.push_back(wiperSpeedMedToHighSwitch);
 	rainModeSwitches.push_back(wiperSpeedHighToLowSwitch);
 	rainModeSwitches.push_back(wiperSpeedHighToMedSwitch);
+
+	// Clear output file (used for graphing)
+	ofstream fileOut;
+	fileOut.open("output.txt");
+	fileOut.close();
 
 	// Initialize director with start mode and mode switches and kick off simulation
 	unsigned int modeSwitchCheckFreq = 10;

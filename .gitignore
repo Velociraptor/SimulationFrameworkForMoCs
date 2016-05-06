@@ -29,3 +29,6 @@
 WindshieldSimulation
 WindshieldSimulationGiotto
 WindshieldSimulationPtides
+
+# Extra Generated Output
+output.txt

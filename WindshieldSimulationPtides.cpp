@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "giotto.h"
 #include "ptides.h"
 #include "actors.h"
@@ -158,11 +159,16 @@ int main() {
 	vector<InterruptInvocation*> giottoInterrupts;
 	giottoInterrupts.push_back(rainfallIntInvoke);
 
+	// Clear output file (used for graphing)
+	ofstream fileOut;
+	fileOut.open("output.txt");
+	fileOut.close();
+
 	// Initialize Giotto wrapper director and kick off simulation
 	vector<ModeSwitch*> noModeSwitches;
 	unsigned int noModeSwitchCheckFreq = 1;
 	GiottoDirector giottoWrapperD = GiottoDirector(wrapperMode, noModeSwitches, noModeSwitchCheckFreq, giottoInterrupts, rainIntFreq);
-	std::chrono::milliseconds m(1000);
+	std::chrono::milliseconds m(2000);
 	giottoWrapperD.Run(m);
 
 	return 0;
