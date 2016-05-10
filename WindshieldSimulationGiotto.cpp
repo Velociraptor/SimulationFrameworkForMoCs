@@ -57,25 +57,6 @@ int main() {
 	// Giotto simulation
 	cout << "Starting Simulation Using Giotto" << endl;
 
-	// // [Alternate] Random Weather Model simulates rainfall as a random int per [unit time]
-	// // input port: range of rain creation
-	// srand((unsigned)time(NULL));
-	// PortValue pvRainGenRange;
-	// pvRainGenRange.valInt = 100;
-	// PortContents pcRainGenRange = {INT, pvRainGenRange};
-	// Port *rainGenRange = new Port(string("rainGenerationRange"), pcRainGenRange);
-	// vector<Port*> vipRainGen;
-	// vipRainGen.push_back(rainGenRange);
-	// // output port: randomly generated int (in range)
-	// PortValue pvRainInit;
-	// pvRainInit.valInt = 0;
-	// PortContents pcRainfall = {INT, pvRainInit};
-	// Port *rainfall = new Port(string("rainfall"), pcRainfall);
-	// vector<Port*> vopRainGen;
-	// vopRainGen.push_back(rainfall);
-	// // Initialize weather model actor
-	// RandomIntInRange *weatherModel = new RandomIntInRange(string("WeatherModel"), vipRainGen, vopRainGen);
-
 	// Ramping Weather Model simulates rainfall as a repeating ramp from 0 to 100
 	// input ports: range of rain creation, increment	PortValue pvRainGenRange;
 	PortValue pvRainGenRange;
